@@ -1,7 +1,8 @@
 package com.example.domain.Trip.tripbook;
 
+import com.example.domain.Common.entity.book.Book;
 import com.example.domain.Common.errorhanding.check.Check;
-import com.example.domain.Common.errorhanding.guard.NullArgumentException;
+import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.outcome.Outcome;
 import com.example.domain.Common.sharedvalueobject.date.Date;
 import com.example.domain.Common.entity.Entity;
@@ -16,8 +17,9 @@ import com.example.domain.Trip.tripmember.TripMember;
 import com.example.domain.Trip.category.Category;
 
 import java.util.List;
+import java.util.Optional;
 
-public class TripBook extends Entity {
+public class TripBook extends Book {
 
     // region Factory method -----------------------------------------------------------------------
     public static Result<TripBook, Err.Create> create(ID id,
@@ -108,7 +110,7 @@ public class TripBook extends Entity {
                      Uri photoUri,
                      Date startDate,
                      Date endDate) {
-        super(id);
+        super(id, id);
         mCategories = categories;
         mTripMembers = tripMembers;
         mTripExpenses = tripExpenses;
@@ -145,9 +147,14 @@ public class TripBook extends Entity {
         return Outcome.ok();
     }
 
+    public boolean isDuringTrip(Date date) {
+        boolean isBeforeStartDate = mStartDate.isBefore(date);
+        boolean isAfterEndDate = mEndDate.isAfter(date);
+        return isBeforeStartDate && isAfterEndDate;
+    }
 
     // ----------------------------------------Category---------------------------------------------
-    public void addCategory(Category category) {
+    public void putCategory(Category category) {
         mCategories.put(category);
     }
 
@@ -164,7 +171,7 @@ public class TripBook extends Entity {
 
 
     // ----------------------------------------TripMember-------------------------------------------
-    public void addMember(TripMember tripMember) {
+    public void putMember(TripMember tripMember) {
         mTripMembers.put(tripMember);
     }
 
@@ -178,7 +185,7 @@ public class TripBook extends Entity {
 
     // ---------------------------------------Trip AddExpense---------------------------------------
 
-    public Outcome<Err.AddExpense> addExpense(TripExpense tripExpense) {
+    public Outcome<Err.AddExpense> putExpense(TripExpense tripExpense) {
         // Check if payer is valid Member
         boolean hasInvalidPayer = isInvalidMember(tripExpense.getPayers());
         if (hasInvalidPayer) return Outcome.err(Err.AddExpense.INVALID_PAYER);
@@ -240,15 +247,15 @@ public class TripBook extends Entity {
 
     // region Getter -------------------------------------------------------------------------------
     public EntityList<Category> getCategories() {
-        return EntityList.unmodifiableList(mCategories);
+        return mCategories.unmodifiable();
     }
 
     public EntityList<TripMember> getTripMembers() {
-        return EntityList.unmodifiableList(mTripMembers);
+        return mTripMembers.unmodifiable();
     }
 
     public EntityList<TripExpense> getTripExpenses() {
-        return EntityList.unmodifiableList(mTripExpenses);
+        return mTripExpenses.unmodifiable();
     }
 
     public Name getTripName() {
@@ -265,6 +272,10 @@ public class TripBook extends Entity {
 
     public Date getEndDate() {
         return mEndDate;
+    }
+
+    public int getTripNumberOfDay() {
+        return getStartDate().different(getEndDate());
     }
     // endregion Getter ----------------------------------------------------------------------------
 }

@@ -1,23 +1,21 @@
 package com.example.domain.Trip.tripexpense;
 
-import com.example.domain.Common.entity.Entity;
 import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.errorhanding.exception.ImpossibleState;
 import com.example.domain.Common.errorhanding.guard.Guard;
-import com.example.domain.Common.errorhanding.guard.NullArgumentException;
+import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.result.Result;
 import com.example.domain.Common.sharedvalueobject.date.Date;
-import com.example.domain.Common.sharedvalueobject.monetaryamount.MonetaryAmount;
+import com.example.domain.Common.sharedvalueobject.amount.MonetaryAmount;
 import com.example.domain.Common.sharedvalueobject.note.Note;
-import com.example.domain.Common.transaction.Transaction;
+import com.example.domain.Common.entity.transaction.Transaction;
 import com.example.domain.Trip.tripexpense.paymentdetail.PaymentDetail;
 import com.example.domain.Trip.tripexpense.splittingdetail.SplittingDetail;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-public class TripExpense extends Transaction {
+public class TripExpense extends Transaction<MonetaryAmount> {
 
     // region Factory method -----------------------------------------------------------------------
     public static Result<TripExpense, Err.Create> create(
@@ -44,7 +42,9 @@ public class TripExpense extends Transaction {
 
         // Verify total TripExpense  = PaymentDetail
         if (paymentDetail.isPaid()) {
-            MonetaryAmount totalPayment = paymentDetail.getTotalPayment().get();
+            MonetaryAmount totalPayment = paymentDetail
+                    .getTotalPayment()
+                    .orElseThrow(ImpossibleState::new);
             boolean paymentTotalNotTally = totalNotTally(totalExpense, totalPayment);
             if (paymentTotalNotTally) return Result.err(Err.Create.PAYMENT_TOTAL_NOT_TALLY);
         }
@@ -109,16 +109,14 @@ public class TripExpense extends Transaction {
     }
 
     public List<ID> getPayers() {
-        Optional<Map<ID, MonetaryAmount>> memberPayment = mPaymentDetail.getMemberPayment();
-        return memberPayment
-                .map(idMonetaryAmountMap -> new ArrayList<>(idMonetaryAmountMap.keySet()))
+        return mPaymentDetail.getMemberPayment()
+                .map(memberPayment -> new ArrayList<>(memberPayment.keySet()))
                 .orElseGet(ArrayList::new);
     }
 
     public List<ID> getSpenders() {
-        Optional<Map<ID, MonetaryAmount>> memberSpending = mSplittingDetail.getMemberSpending();
-        return memberSpending
-                .map(idMonetaryAmountMap -> new ArrayList<>(idMonetaryAmountMap.keySet()))
+        return mSplittingDetail.getMemberSpending()
+                .map(memberSpending -> new ArrayList<>(memberSpending.keySet()))
                 .orElseGet(ArrayList::new);
     }
 

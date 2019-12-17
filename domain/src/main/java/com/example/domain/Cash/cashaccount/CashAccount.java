@@ -7,4 +7,6 @@ public class CashAccount extends Entity {
     public CashAccount(ID id) {
         super(id);
     }
+
+    // TODO: 16/12/2019 CashAccount
 }

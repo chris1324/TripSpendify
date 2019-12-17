@@ -1,24 +1,67 @@
 package com.example.domain.Cash.cashtransaction;
 
 import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.errorhanding.guard.Guard;
+import com.example.domain.Common.errorhanding.exception.NullArgumentException;
+import com.example.domain.Common.errorhanding.result.Result;
 import com.example.domain.Common.sharedvalueobject.date.Date;
-import com.example.domain.Common.sharedvalueobject.monetaryamount.MonetaryAmount;
+import com.example.domain.Common.sharedvalueobject.amount.MonetaryAmount;
 import com.example.domain.Common.sharedvalueobject.note.Note;
-import com.example.domain.Common.transaction.Transaction;
+import com.example.domain.Common.entity.transaction.Transaction;
 
-public class CashTransaction extends Transaction {
+public class CashTransaction extends Transaction<MonetaryAmount> {
 
-    public enum Type{
+    // region Factory method -----------------------------------------------------------------------
+    public static Result<CashTransaction, Err.Create> create(ID id,
+                                                             Date date,
+                                                             Note note,
+                                                             MonetaryAmount amount,
+                                                             Type transactionType) {
+        try {
+            Guard.NotNull(id);
+            Guard.NotNull(date);
+            Guard.NotNull(note);
+            Guard.NotNull(amount);
+            Guard.NotNull(transactionType);
+        } catch (NullArgumentException e) {
+            return Result.err(Err.Create.NULL_ARGUMENT);
+        }
+
+        return Result.ok(new CashTransaction(id, date, note, amount, transactionType));
+    }
+
+    // endregion Factory method---------------------------------------------------------------------
+
+    // region Error Class --------------------------------------------------------------------------
+    public static class Err {
+        public enum Create {
+            NULL_ARGUMENT
+        }
+    }
+    // endregion Error Class -----------------------------------------------------------------------
+
+    // region Variables and Constructor ------------------------------------------------------------
+    public enum Type {
         WITHDRAWAL,
         DEPOSIT,
-        ADJUSTMENT
+        ADJUSTMENT_UP,
+        ADJUSTMENT_DOWN
     }
 
     private final Type mTransactionType;
 
-
-    public CashTransaction(ID id, Date date, Note note, MonetaryAmount amount, Type transactionType) {
+    private CashTransaction(ID id, Date date, Note note, MonetaryAmount amount, Type transactionType) {
         super(id, date, note, amount);
         mTransactionType = transactionType;
     }
+    // endregion Variables and Constructor ---------------------------------------------------------
+
+    // ---------------------------------------------------------------------------------------------
+
+    // region Getter -------------------------------------------------------------------------------
+
+    public Type getTransactionType() {
+        return mTransactionType;
+    }
+    // endregion Getter ----------------------------------------------------------------------------
 }

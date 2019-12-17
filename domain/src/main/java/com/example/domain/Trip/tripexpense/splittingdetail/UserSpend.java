@@ -2,7 +2,7 @@ package com.example.domain.Trip.tripexpense.splittingdetail;
 
 import com.example.domain.Common.entity.ID;
 import com.example.domain.Common.errorhanding.answer.Answer;
-import com.example.domain.Common.sharedvalueobject.monetaryamount.MonetaryAmount;
+import com.example.domain.Common.sharedvalueobject.amount.MonetaryAmount;
 
 import java.util.Map;
 import java.util.Optional;

@@ -6,18 +6,6 @@ import java.util.UUID;
 
 public class HelloWorld {
     public static void main(String[] args) {
-
-        BigDecimal total = new BigDecimal("2.515");
-        BigDecimal a = total.divide(new BigDecimal(2),BigDecimal.ROUND_HALF_EVEN);
-        BigDecimal b = total.divide(new BigDecimal(2),BigDecimal.ROUND_HALF_UP);
-
-        System.out.println(a.add(b));
-
-        System.out.println(a);
-        System.out.println(b);
-
-
-        System.out.println(UUID.randomUUID().toString());
     }
 
     // region Factory method -----------------------------------------------------------------------

@@ -5,15 +5,16 @@ import com.example.domain.Common.entity.ID;
 import com.example.domain.Common.function.Function;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EntityList<E extends Entity> {
 
     // --------------------------------------Static-------------------------------------------------
-    static <Type extends Entity> EntityList<Type> newList(List<Type> entityList) {
+    static <E extends Entity> EntityList<E> newList(List<E> entityList) {
         return new EntityListImpl<>(entityList);
     }
 
-    static <Type extends Entity> EntityList<Type> unmodifiableList(EntityList<Type> entityList) {
+    static <E extends Entity> EntityList<E> unmodifiableList(EntityList<E> entityList) {
         return new UnmodifiableEntityList<>(entityList);
     }
 
@@ -27,18 +28,26 @@ public interface EntityList<E extends Entity> {
 
     void remove(ID id);
 
+    void remove(Function<E, Boolean> function);
+
     void removeAll();
 
     // -----------------------------------------Query-----------------------------------------------
-    E get(ID id);
+    Optional<E> get(ID id);
 
     boolean contain(Function<E, Boolean> function);
 
     boolean contain(ID id);
+
+    Optional<E> search(Function<E, Boolean> function);
 
     List<E> getAll();
 
     List<ID> getAll(Mark mark);
 
     int size();
+
+    // ---------------------------------------------------------------------------------------------
+
+    EntityList<E> unmodifiable();
 }

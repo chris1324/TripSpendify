@@ -10,6 +10,11 @@ class Ok<E> implements Outcome<E> {
     }
 
     @Override
+    public boolean isErr() {
+        return false;
+    }
+
+    @Override
     public Optional<E> getError() {
         return Optional.empty();
     }

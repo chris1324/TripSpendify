@@ -1,6 +1,6 @@
 package com.example.domain.Common.calculator;
 
-import com.example.domain.Common.sharedvalueobject.monetaryamount.MonetaryAmount;
+import com.example.domain.Common.sharedvalueobject.amount.Amount;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ public interface Calculator {
         return new CalculatorImpl();
     }
 
-    MonetaryAmount sum(MonetaryAmount... amounts);
+    <A extends Amount> A sum(A... amounts);
 
-    MonetaryAmount sum(List<MonetaryAmount> amounts);
+    <A extends Amount> A sum(List<A> amounts);
 
 
 

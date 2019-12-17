@@ -3,12 +3,13 @@ package com.example.domain.Common.sharedvalueobject.date;
 import com.example.domain.Common.errorhanding.check.Check;
 import com.example.domain.Common.errorhanding.result.Result;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 
 public class Date {
 
     // region Factory method -----------------------------------------------------------------------
-    public Result<Date,Err.Create> create(long millisecond) {
+    public Result<Date, Err.Create> create(long millisecond) {
         if (Check.isDefault(millisecond)) return Result.err(Err.Create.MILLISECOND_IS_ZERO);
 
         return Result.ok(new Date(millisecond));
@@ -16,7 +17,7 @@ public class Date {
     // endregion Factory method---------------------------------------------------------------------
 
     // region Error Class --------------------------------------------------------------------------
-    public static class Err{
+    public static class Err {
         public enum Create {
             MILLISECOND_IS_ZERO
         }
@@ -65,8 +66,14 @@ public class Date {
                 this.getDayOfMonth() == dateX.getDayOfMonth();
     }
 
-    public boolean isAfter(Date dateX){
+    public boolean isAfter(Date dateX) {
         return !isBefore(dateX);
+    }
+
+    public int different(Date dateX) {
+        long difference = Math.abs(this.getMillisecond() - dateX.getMillisecond());
+        long differenceDay =  difference / (24 * 60 * 60 * 1000);
+        return BigDecimal.valueOf(differenceDay).setScale(0,BigDecimal.ROUND_UP).intValue();
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -76,11 +83,19 @@ public class Date {
     }
 
     public int getMonth() {
-        return month + 1;
+        return getMonthZeroBase() + 1;
+    }
+
+    public int getMonthZeroBase() {
+        return month;
     }
 
     public int getDayOfMonth() {
         return dayOfMonth;
+    }
+
+    public long getMillisecond() {
+        return millisecond;
     }
 
     // ---------------------------------------------------------------------------------------------

@@ -14,5 +14,7 @@ public interface Outcome<E> {
 
     boolean isOk();
 
+    boolean isErr();
+
     Optional<E> getError();
 }

@@ -15,6 +15,10 @@ class Err<E> implements Outcome<E>{
         return false;
     }
 
+    @Override
+    public boolean isErr() {
+        return true;
+    }
 
     @Override
     public Optional<E> getError() {

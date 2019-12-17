@@ -1,18 +1,19 @@
-package com.example.domain.Common.transaction;
+package com.example.domain.Common.entity.transaction;
 
 import com.example.domain.Common.entity.Entity;
 import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.sharedvalueobject.amount.Amount;
 import com.example.domain.Common.sharedvalueobject.date.Date;
-import com.example.domain.Common.sharedvalueobject.monetaryamount.MonetaryAmount;
+import com.example.domain.Common.sharedvalueobject.amount.MonetaryAmount;
 import com.example.domain.Common.sharedvalueobject.note.Note;
 
-public class Transaction extends Entity {
+public abstract class Transaction<A extends Amount> extends Entity {
 
     private final Date mDate;
     private final Note mNote;
-    private final MonetaryAmount mAmount;
+    private final A mAmount;
 
-    public Transaction(ID id, Date date, Note note, MonetaryAmount amount) {
+    protected Transaction(ID id, Date date, Note note, A amount) {
         super(id);
         mDate = date;
         mNote = note;
@@ -27,7 +28,7 @@ public class Transaction extends Entity {
         return mNote;
     }
 
-    public MonetaryAmount getAmount() {
+    public A getAmount() {
         return mAmount;
     }
 }

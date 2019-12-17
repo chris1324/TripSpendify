@@ -4,11 +4,14 @@ import com.example.domain.Common.entity.Entity;
 import com.example.domain.Common.entity.ID;
 import com.example.domain.Common.function.Function;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 class EntityListImpl<E extends Entity> implements EntityList<E> {
 
@@ -35,14 +38,21 @@ class EntityListImpl<E extends Entity> implements EntityList<E> {
     }
 
     @Override
+    public void remove(Function<E, Boolean> function) {
+        search(function).ifPresent(e -> EntityListImpl.this.remove(e.getId()));
+    }
+
+    @Override
     public void removeAll() {
         for (ID id : entityMap.keySet()) remove(id);
     }
 
     // -----------------------------------------Query-----------------------------------------------
     @Override
-    public E get(ID id) {
-        return entityMap.get(id);
+    public Optional<E> get(ID id) {
+        E result = entityMap.get(id);
+        if (result == null) return Optional.empty();
+        return Optional.of(result);
     }
 
     @Override
@@ -78,6 +88,24 @@ class EntityListImpl<E extends Entity> implements EntityList<E> {
     @Override
     public boolean contain(ID id) {
         return entityMap.containsKey(id);
+    }
+
+    @Override
+    public Optional<E> search(Function<E, Boolean> criteria) {
+        final List<E> entities = getAll();
+        for (E entity : entities) {
+            if (criteria.apply(entity)) {
+                return Optional.of(entity);
+            }
+        }
+        return Optional.empty();
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public EntityList<E> unmodifiable() {
+        return  EntityList.unmodifiableList(this);
     }
 
     // region helper method ------------------------------------------------------------------------

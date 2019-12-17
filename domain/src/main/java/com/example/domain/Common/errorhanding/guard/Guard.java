@@ -1,7 +1,7 @@
 package com.example.domain.Common.errorhanding.guard;
 
 
-import java.util.List;
+import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 
 public class Guard {
 
