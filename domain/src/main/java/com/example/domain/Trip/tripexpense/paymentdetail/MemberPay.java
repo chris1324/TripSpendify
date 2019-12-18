@@ -1,14 +1,17 @@
 package com.example.domain.Trip.tripexpense.paymentdetail;
 
-import com.example.domain.Common.calculator.Calculator;
-import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.errorhanding.exception.ImpossibleState;
+import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.errorhanding.answer.Answer;
-import com.example.domain.Common.sharedvalueobject.amount.MonetaryAmount;
+import com.example.domain.Common.sharedvalueobject.numeric.Amount;
+import com.example.domain.Common.sharedvalueobject.numeric.MonetaryAmount;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 class MemberPay implements PaymentDetail {
 
@@ -18,7 +21,7 @@ class MemberPay implements PaymentDetail {
 
     MemberPay(Map<ID, MonetaryAmount> memberPayment) {
         mMemberPayment = memberPayment;
-        mMemberTotalPayment = Calculator.get().sum(new ArrayList<>(mMemberPayment.values()));
+        mMemberTotalPayment = MonetaryAmount.calculator().sum(new ArrayList<>(mMemberPayment.values()));
         mTotalPayment = mMemberTotalPayment;
     }
 
@@ -52,4 +55,8 @@ class MemberPay implements PaymentDetail {
     public Optional<Map<ID, MonetaryAmount>> getMemberPayment() {
         return Optional.of(Collections.unmodifiableMap(mMemberPayment));
     }
+
+    // region helper method ------------------------------------------------------------------------
+    // endregion helper method ---------------------------------------------------------------------
+
 }

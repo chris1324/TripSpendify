@@ -1,9 +1,8 @@
 package com.example.domain.Trip.tripexpense.splittingdetail;
 
-import com.example.domain.Common.calculator.Calculator;
-import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.errorhanding.answer.Answer;
-import com.example.domain.Common.sharedvalueobject.amount.MonetaryAmount;
+import com.example.domain.Common.sharedvalueobject.numeric.MonetaryAmount;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +17,7 @@ public class MemberSpend implements SplittingDetail {
 
     public MemberSpend(Map<ID, MonetaryAmount> memberSpending) {
         mMemberSpending = memberSpending;
-        mMemberTotalSpending= Calculator.get().sum(new ArrayList<>(mMemberSpending.values()));
+        mMemberTotalSpending = MonetaryAmount.calculator().sum(new ArrayList<>(mMemberSpending.values()));
         mTotalSpending = mMemberTotalSpending;
     }
 

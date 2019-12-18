@@ -1,12 +1,11 @@
 package com.example.domain.Budget.budgetbook;
 
-import com.example.domain.Budget.budgetallocation.BudgetTransaction;
+import com.example.domain.Budget.budgettransaction.BudgetTransaction;
 import com.example.domain.Budget.budgetrecord.BudgetRecord;
-import com.example.domain.Common.entity.Entity;
-import com.example.domain.Common.entity.ID;
-import com.example.domain.Common.entity.book.Book;
-import com.example.domain.Common.entity.transaction.Transaction;
+import com.example.domain.Common.sharedvalueobject.id.ID;
+import com.example.domain.Common.baseclass.book.Book;
 import com.example.domain.Common.entitylist.EntityList;
+import com.example.domain.Common.errorhanding.exception.ImpossibleState;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.guard.Guard;
 import com.example.domain.Common.errorhanding.result.Result;
@@ -65,7 +64,7 @@ public class BudgetBook extends Book {
     // endregion Variables and Constructor ---------------------------------------------------------
 
     // -------------------------------------Budget Record-------------------------------------------
-    void putBudgetRecord(BudgetRecord record) {
+    void addBudgetRecord(BudgetRecord record) {
         mBudgetRecords.put(record);
     }
 
@@ -74,9 +73,10 @@ public class BudgetBook extends Book {
     }
 
     // -----------------------------------Budget Transaction----------------------------------------
-    void putBudgetTransaction(BudgetTransaction transaction) {
+    void addBudgetTransaction(BudgetTransaction transaction) {
         this.removeBudgetTransWithThisDay(transaction.getDate());
         mBudgetTransactions.put(transaction);
+        this.addBudgetRecord(createRecordFromBudgetTrans(transaction));
     }
 
     void removeBudgetTransaction(ID transactionId) {
@@ -90,6 +90,17 @@ public class BudgetBook extends Book {
                 .search(budgetTransaction -> budgetTransaction.getDate().isSameDate(date))
                 .map(BudgetTransaction::getId)
                 .ifPresent(this::removeBudgetTransaction);
+    }
+
+    private BudgetRecord createRecordFromBudgetTrans(BudgetTransaction transaction) {
+        return BudgetRecord
+                .create(
+                        transaction.getId(),
+                        BudgetRecord.Source.BUDGET_TRANSACTION,
+                        transaction.getAmount()
+                )
+                .getValue()
+                .orElseThrow(ImpossibleState::new);
     }
     // endregion helper method ---------------------------------------------------------------------
 

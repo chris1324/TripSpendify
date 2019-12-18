@@ -1,23 +1,24 @@
 package com.example.domain.Common.entitylist;
 
-import com.example.domain.Common.entity.Entity;
-import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.baseclass.entity.Entity;
+import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.function.Function;
 
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.Set;
 
 class EntityListImpl<E extends Entity> implements EntityList<E> {
 
     private final Map<ID, E> entityMap = new HashMap<>();
-    private final List<ID> modifiedEntityId = new ArrayList<>();
-    private final List<ID> removedEntityId = new ArrayList<>();
+    private final Set<ID> modifiedEntityId = new HashSet<>();
+    private final Set<ID> removedEntityId = new HashSet<>();
 
     EntityListImpl(List<E> entityList) {
         this.putToMap(entityList);
@@ -39,12 +40,12 @@ class EntityListImpl<E extends Entity> implements EntityList<E> {
 
     @Override
     public void remove(Function<E, Boolean> function) {
-        search(function).ifPresent(e -> EntityListImpl.this.remove(e.getId()));
+        this.search(function).ifPresent(e -> EntityListImpl.this.remove(e.getId()));
     }
 
     @Override
     public void removeAll() {
-        for (ID id : entityMap.keySet()) remove(id);
+        for (ID id : entityMap.keySet()) this.remove(id);
     }
 
     // -----------------------------------------Query-----------------------------------------------
@@ -61,14 +62,14 @@ class EntityListImpl<E extends Entity> implements EntityList<E> {
     }
 
     @Override
-    public List<ID> getAll(Mark mark) {
+    public Set<ID> getAll(Mark mark) {
         if (mark == Mark.Modified)
-            return Collections.unmodifiableList(modifiedEntityId);
+            return Collections.unmodifiableSet(modifiedEntityId);
 
         if (mark == Mark.Removed)
-            return Collections.unmodifiableList(removedEntityId);
+            return Collections.unmodifiableSet(removedEntityId);
 
-        return new ArrayList<>();
+        return new HashSet<>();
     }
 
     @Override

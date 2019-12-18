@@ -1,11 +1,12 @@
 package com.example.domain.Common.entitylist;
 
-import com.example.domain.Common.entity.Entity;
-import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.baseclass.entity.Entity;
+import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.function.Function;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 class UnmodifiableEntityList<E extends Entity> implements EntityList<E> {
 
@@ -49,7 +50,7 @@ class UnmodifiableEntityList<E extends Entity> implements EntityList<E> {
     }
 
     @Override
-    public List<ID> getAll(Mark mark) {
+    public Set<ID> getAll(Mark mark) {
         return mEntityList.getAll(mark);
     }
 

@@ -1,12 +1,11 @@
 package com.example.domain.Trip.tripbook;
 
-import com.example.domain.Common.entity.book.Book;
+import com.example.domain.Common.baseclass.book.Book;
 import com.example.domain.Common.errorhanding.check.Check;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.outcome.Outcome;
 import com.example.domain.Common.sharedvalueobject.date.Date;
-import com.example.domain.Common.entity.Entity;
-import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.entitylist.EntityList;
 import com.example.domain.Common.sharedvalueobject.name.Name;
 import com.example.domain.Common.sharedvalueobject.uri.Uri;
@@ -17,7 +16,6 @@ import com.example.domain.Trip.tripmember.TripMember;
 import com.example.domain.Trip.category.Category;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TripBook extends Book {
 
@@ -154,7 +152,7 @@ public class TripBook extends Book {
     }
 
     // ----------------------------------------Category---------------------------------------------
-    public void putCategory(Category category) {
+    public void addCategory(Category category) {
         mCategories.put(category);
     }
 
@@ -171,13 +169,14 @@ public class TripBook extends Book {
 
 
     // ----------------------------------------TripMember-------------------------------------------
-    public void putMember(TripMember tripMember) {
+    public void addMember(TripMember tripMember) {
         mTripMembers.put(tripMember);
     }
 
     public Outcome<Err.RemoveMember> removeMember(ID tripMemberId) {
         boolean hasTrans = doMemberHasTrans(tripMemberId);
         if (hasTrans) return Outcome.err(Err.RemoveMember.HAD_TRANSACTION);
+        // TODO: 18/12/2019 removeMember: allow for remove
 
         mTripMembers.remove(tripMemberId);
         return Outcome.ok();
@@ -185,7 +184,7 @@ public class TripBook extends Book {
 
     // ---------------------------------------Trip AddExpense---------------------------------------
 
-    public Outcome<Err.AddExpense> putExpense(TripExpense tripExpense) {
+    public Outcome<Err.AddExpense> addExpense(TripExpense tripExpense) {
         // Check if payer is valid Member
         boolean hasInvalidPayer = isInvalidMember(tripExpense.getPayers());
         if (hasInvalidPayer) return Outcome.err(Err.AddExpense.INVALID_PAYER);
@@ -197,6 +196,8 @@ public class TripBook extends Book {
         // Check if category is valid
         boolean isInvalidCategory = isInvalidCategory(tripExpense.getCategoryId());
         if (isInvalidCategory) return Outcome.err(Err.AddExpense.INVALID_CATEGORY);
+
+        // TODO: 18/12/2019 addExpense: Check if User involved
 
         // Proceed
         // TODO: 14/12/2019 addExpense DomainEvent

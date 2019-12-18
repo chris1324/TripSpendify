@@ -9,7 +9,7 @@ import java.util.Calendar;
 public class Date {
 
     // region Factory method -----------------------------------------------------------------------
-    public Result<Date, Err.Create> create(long millisecond) {
+    public static Result<Date, Err.Create> create(long millisecond) {
         if (Check.isDefault(millisecond)) return Result.err(Err.Create.MILLISECOND_IS_ZERO);
 
         return Result.ok(new Date(millisecond));

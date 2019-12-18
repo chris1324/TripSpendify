@@ -1,11 +1,12 @@
 package com.example.domain.Common.entitylist;
 
-import com.example.domain.Common.entity.Entity;
-import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.baseclass.entity.Entity;
+import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.function.Function;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface EntityList<E extends Entity> {
 
@@ -43,7 +44,7 @@ public interface EntityList<E extends Entity> {
 
     List<E> getAll();
 
-    List<ID> getAll(Mark mark);
+    Set<ID> getAll(Mark mark);
 
     int size();
 

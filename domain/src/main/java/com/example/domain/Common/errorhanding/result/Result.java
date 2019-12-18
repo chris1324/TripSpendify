@@ -18,6 +18,7 @@ public interface Result<V, E> {
 
     Optional<E> getError();
 
+
     boolean isOk();
 
     boolean isErr();

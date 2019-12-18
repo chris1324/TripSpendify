@@ -3,10 +3,10 @@ package com.example.domain.Collectible.collectiblebook;
 import com.example.domain.Collectible.collectiblerecord.CollectibleRecord;
 import com.example.domain.Collectible.collectibletransaction.CollectibleTransaction;
 
-import com.example.domain.Common.entity.ID;
-import com.example.domain.Common.entity.book.Book;
+import com.example.domain.Common.baseclass.transaction.Transaction;
+import com.example.domain.Common.sharedvalueobject.id.ID;
+import com.example.domain.Common.baseclass.book.Book;
 import com.example.domain.Common.entitylist.EntityList;
-import com.example.domain.Common.errorhanding.exception.ImpossibleState;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.guard.Guard;
 import com.example.domain.Common.errorhanding.result.Result;
@@ -60,7 +60,7 @@ public class CollectibleBook extends Book {
     // endregion Variables and Constructor ---------------------------------------------------------
 
     // ----------------------------------Collectible Record ----------------------------------------
-    void putCollectibleRecord(CollectibleRecord record) {
+    void addCollectibleRecord(CollectibleRecord record) {
         mCollectibleRecords.put(record);
     }
 
@@ -69,9 +69,9 @@ public class CollectibleBook extends Book {
     }
 
     // ----------------------------------Collectible Transaction -----------------------------------
-    void putCollectibleTrans(CollectibleTransaction transaction) {
+    void addCollectibleTrans(CollectibleTransaction transaction, CollectibleRecord record) {
         mCollectibleTrans.put(transaction);
-        this.putCollectibleRecord(createRecordFromCollTrans(transaction));
+        this.addCollectibleRecord(record);
     }
 
     void removeCollectibleTrans(ID transactionID) {
@@ -79,18 +79,6 @@ public class CollectibleBook extends Book {
         this.removeCollectibleRecord(transactionID);
     }
 
-    // region helper method ------------------------------------------------------------------------
-    private CollectibleRecord createRecordFromCollTrans(CollectibleTransaction transaction) {
-        return CollectibleRecord
-                .creare(
-                        ID.newId(),
-                        CollectibleRecord.Source.COLLECTIBLE_TRANS,
-                        transaction.getId()
-                )
-                .getValue()
-                .orElseThrow(ImpossibleState::new);
-    }
-    // endregion helper method ---------------------------------------------------------------------
 
     // region Getter -------------------------------------------------------------------------------
     public EntityList<CollectibleTransaction> getCollectibleTrans() {

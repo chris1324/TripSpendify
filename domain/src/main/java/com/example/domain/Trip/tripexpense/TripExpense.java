@@ -1,21 +1,21 @@
 package com.example.domain.Trip.tripexpense;
 
-import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.errorhanding.exception.ImpossibleState;
 import com.example.domain.Common.errorhanding.guard.Guard;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.result.Result;
 import com.example.domain.Common.sharedvalueobject.date.Date;
-import com.example.domain.Common.sharedvalueobject.amount.MonetaryAmount;
+import com.example.domain.Common.sharedvalueobject.numeric.MonetaryAmount;
 import com.example.domain.Common.sharedvalueobject.note.Note;
-import com.example.domain.Common.entity.transaction.Transaction;
+import com.example.domain.Common.baseclass.transaction.Transaction;
 import com.example.domain.Trip.tripexpense.paymentdetail.PaymentDetail;
 import com.example.domain.Trip.tripexpense.splittingdetail.SplittingDetail;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TripExpense extends Transaction<MonetaryAmount> {
+public class TripExpense extends Transaction {
 
     // region Factory method -----------------------------------------------------------------------
     public static Result<TripExpense, Err.Create> create(
@@ -65,7 +65,7 @@ public class TripExpense extends Transaction<MonetaryAmount> {
     }
 
     private static boolean totalNotTally(MonetaryAmount amountA, MonetaryAmount amountB) {
-        return !amountA.equals(amountB);
+        return !(amountA.equals(amountB));
     }
 
     // endregion Factory method---------------------------------------------------------------------

@@ -1,22 +1,14 @@
 package com.example.domain.PersExpense.persexpbook;
 
-import com.example.domain.Common.entity.Entity;
-import com.example.domain.Common.entity.ID;
-import com.example.domain.Common.entity.book.Book;
-import com.example.domain.Common.entity.transaction.Transaction;
+import com.example.domain.Common.sharedvalueobject.id.ID;
+import com.example.domain.Common.baseclass.book.Book;
 import com.example.domain.Common.entitylist.EntityList;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.guard.Guard;
-import com.example.domain.Common.errorhanding.outcome.Outcome;
 import com.example.domain.Common.errorhanding.result.Result;
-import com.example.domain.Common.function.Function;
 import com.example.domain.PersExpense.persexprecord.PersExpRecord;
-import com.example.domain.Trip.tripexpense.TripExpense;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PersExpBook extends Book {
 
@@ -58,7 +50,7 @@ public class PersExpBook extends Book {
 
     // ---------------------------------------PersExpRecord-----------------------------------------
 
-    void putPersExpRecord(PersExpRecord persExpRecord) {
+    void addPersExpRecord(PersExpRecord persExpRecord) {
         mPersExpRecords.put(persExpRecord);
     }
 

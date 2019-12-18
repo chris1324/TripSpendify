@@ -2,8 +2,8 @@ package com.example.domain.Cash.cashbook;
 
 import com.example.domain.Cash.cashrecord.CashRecord;
 import com.example.domain.Cash.cashtransaction.CashTransaction;
-import com.example.domain.Common.entity.ID;
-import com.example.domain.Common.entity.book.Book;
+import com.example.domain.Common.sharedvalueobject.id.ID;
+import com.example.domain.Common.baseclass.book.Book;
 import com.example.domain.Common.entitylist.EntityList;
 import com.example.domain.Common.errorhanding.exception.ImpossibleState;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
@@ -37,7 +37,7 @@ public class CashBook extends Book {
 
     // endregion Factory method---------------------------------------------------------------------
 
-    // region Error Class --------------------------------------------------------------------------
+    // region Error Class -------------------------------`-------------------------------------------
     public static class Err {
         public enum Create {
             NULL_ARGUMENT
@@ -61,7 +61,7 @@ public class CashBook extends Book {
     // endregion Variables and Constructor ---------------------------------------------------------
 
     // ---------------------------------------Cash Record-------------------------------------------
-    void putCashRecord(CashRecord cashRecord) {
+    void addCashRecord(CashRecord cashRecord) {
         mCashRecords.put(cashRecord);
     }
 
@@ -70,9 +70,9 @@ public class CashBook extends Book {
     }
 
     // -------------------------------------Cash Transaction----------------------------------------
-    void putCashTransaction(CashTransaction cashTransaction) {
+    void addCashTransaction(CashTransaction cashTransaction) {
         mCashTransactions.put(cashTransaction);
-        this.putCashRecord(createRecordFromCashTrans(cashTransaction));
+        this.addCashRecord(createRecordFromCashTrans(cashTransaction));
     }
 
     void removeCashTransaction(ID transactionId) {
@@ -84,9 +84,10 @@ public class CashBook extends Book {
     private CashRecord createRecordFromCashTrans(CashTransaction transaction) {
         return CashRecord
                 .create(
-                        ID.newId(),
+                        transaction.getId(),
                         CashRecord.Source.CASH_TRANSACTION,
-                        transaction.getId())
+                        transaction.getAmount()
+                )
                 .getValue()
                 .orElseThrow(ImpossibleState::new);
     }

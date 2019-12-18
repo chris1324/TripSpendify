@@ -1,9 +1,10 @@
 package com.example.domain.Trip.tripexpense.paymentdetail;
 
 import com.example.domain.Common.calculator.Calculator;
-import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.errorhanding.result.Result;
+import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.errorhanding.answer.Answer;
-import com.example.domain.Common.sharedvalueobject.amount.MonetaryAmount;
+import com.example.domain.Common.sharedvalueobject.numeric.MonetaryAmount;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,10 +21,8 @@ class UserAndMemberPay implements PaymentDetail {
     UserAndMemberPay(MonetaryAmount userPayment, Map<ID, MonetaryAmount> memberPayment) {
         mUserPayment = userPayment;
         mMemberPayment = memberPayment;
-
-        Calculator calculator = Calculator.get();
-        mMemberTotalPayment = calculator.sum(new ArrayList<>(mMemberPayment.values()));
-        mTotalPayment = calculator.sum(mUserPayment, mMemberTotalPayment);
+        mMemberTotalPayment = MonetaryAmount.calculator().sum(new ArrayList<>(mMemberPayment.values()));
+        mTotalPayment = MonetaryAmount.calculator().sum(mUserPayment, mMemberTotalPayment);
     }
 
     @Override

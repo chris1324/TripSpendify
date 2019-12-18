@@ -1,15 +1,15 @@
 package com.example.domain.Cash.cashtransaction;
 
-import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.errorhanding.guard.Guard;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.result.Result;
 import com.example.domain.Common.sharedvalueobject.date.Date;
-import com.example.domain.Common.sharedvalueobject.amount.MonetaryAmount;
+import com.example.domain.Common.sharedvalueobject.numeric.MonetaryAmount;
 import com.example.domain.Common.sharedvalueobject.note.Note;
-import com.example.domain.Common.entity.transaction.Transaction;
+import com.example.domain.Common.baseclass.transaction.Transaction;
 
-public class CashTransaction extends Transaction<MonetaryAmount> {
+public class CashTransaction extends Transaction {
 
     // region Factory method -----------------------------------------------------------------------
     public static Result<CashTransaction, Err.Create> create(ID id,
@@ -45,7 +45,23 @@ public class CashTransaction extends Transaction<MonetaryAmount> {
         WITHDRAWAL,
         DEPOSIT,
         ADJUSTMENT_UP,
-        ADJUSTMENT_DOWN
+        ADJUSTMENT_DOWN;
+
+         boolean getEffect(Type type){
+            switch (type){
+
+                case WITHDRAWAL:
+                    break;
+                case DEPOSIT:
+                    break;
+                case ADJUSTMENT_UP:
+                    break;
+                case ADJUSTMENT_DOWN:
+                    break;
+            }
+
+            return false;
+        }
     }
 
     private final Type mTransactionType;

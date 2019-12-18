@@ -1,7 +1,7 @@
 package com.example.domain.Cash.cashaccount;
 
-import com.example.domain.Common.entity.Entity;
-import com.example.domain.Common.entity.ID;
+import com.example.domain.Common.baseclass.entity.Entity;
+import com.example.domain.Common.sharedvalueobject.id.ID;
 
 public class CashAccount extends Entity {
     public CashAccount(ID id) {
