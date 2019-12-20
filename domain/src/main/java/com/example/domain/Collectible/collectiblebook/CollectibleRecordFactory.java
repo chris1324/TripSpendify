@@ -3,9 +3,9 @@ package com.example.domain.Collectible.collectiblebook;
 import com.example.domain.Collectible.collectiblerecord.CollectibleRecord;
 import com.example.domain.Collectible.collectibletransaction.CollectibleTransaction;
 import com.example.domain.Common.errorhanding.exception.ImpossibleState;
+import com.example.domain.Common.errorhanding.exception.UnexpectedEnumValue;
 import com.example.domain.Common.errorhanding.exception.UnhandledError;
 import com.example.domain.Common.errorhanding.pair.Pair;
-import com.example.domain.Common.errorhanding.result.Result;
 import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.sharedvalueobject.numeric.Amount;
 import com.example.domain.Common.sharedvalueobject.numeric.MonetaryAmount;
@@ -13,7 +13,6 @@ import com.example.domain.Trip.tripexpense.TripExpense;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CollectibleRecordFactory {
@@ -50,13 +49,13 @@ public class CollectibleRecordFactory {
         // Compare and Return
         switch (transactionType) {
             case CONTRIBUTION:
-                if (userIsPayer) return CollectibleRecord.Source.COLLECTIBLE_CONTRIBUTION_MADE;
-                return CollectibleRecord.Source.COLLECTIBLE_CONTRIBUTION_ACCEPTED;
+                if (userIsPayer) return CollectibleRecord.Source.COLL_CONTRIBUTION_MADE;
+                return CollectibleRecord.Source.COLL_CONTRIBUTION_ACCEPTED;
             case SETTLEMENT:
-                if (userIsPayer) return CollectibleRecord.Source.COLLECTIBLE_SETTLEMENT_MADE;
-                return CollectibleRecord.Source.COLLECTIBLE_SETTLEMENT_ACCEPTED;
+                if (userIsPayer) return CollectibleRecord.Source.COLL_SETTLEMENT_MADE;
+                return CollectibleRecord.Source.COLL_SETTLEMENT_ACCEPTED;
             default:
-                throw new UnhandledError();
+                throw new UnexpectedEnumValue();
         }
     }
     // endregion helper method ---------------------------------------------------------------------

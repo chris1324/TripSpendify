@@ -3,6 +3,7 @@ package com.example.domain.Collectible.collectiblebook;
 import com.example.domain.Collectible.collectiblerecord.CollectibleRecord;
 import com.example.domain.Collectible.collectibletransaction.CollectibleTransaction;
 
+import com.example.domain.Collectible.domainevent.CollTransAdded;
 import com.example.domain.Common.baseclass.transaction.Transaction;
 import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.baseclass.book.Book;
@@ -72,13 +73,14 @@ public class CollectibleBook extends Book {
     void addCollectibleTrans(CollectibleTransaction transaction, CollectibleRecord record) {
         mCollectibleTrans.put(transaction);
         this.addCollectibleRecord(record);
+        super.addDomainEvent(new CollTransAdded(this.getTripBookID(), transaction.getId()));
     }
 
     void removeCollectibleTrans(ID transactionID) {
         mCollectibleTrans.remove(transactionID);
         this.removeCollectibleRecord(transactionID);
+        super.addDomainEvent(new CollTransAdded(this.getTripBookID(), transactionID));
     }
-
 
     // region Getter -------------------------------------------------------------------------------
     public EntityList<CollectibleTransaction> getCollectibleTrans() {

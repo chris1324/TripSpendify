@@ -1,5 +1,6 @@
 package com.example.domain.Budget.budgetrecord;
 
+import com.example.domain.Common.errorhanding.exception.UnexpectedEnumValue;
 import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.guard.Guard;
@@ -22,7 +23,7 @@ public class BudgetRecord extends Record<BudgetRecord.Source, MonetaryAmount> {
             return Result.err(Err.Create.NULL_ARGUMENT);
         }
 
-        return Result.ok(new BudgetRecord(sourceTransId, source,amount));
+        return Result.ok(new BudgetRecord(sourceTransId, source, amount));
     }
     // endregion Factory method---------------------------------------------------------------------
 
@@ -37,10 +38,22 @@ public class BudgetRecord extends Record<BudgetRecord.Source, MonetaryAmount> {
     // region Variables and Constructor ------------------------------------------------------------
     public enum Source {
         TRIP_EXPENSE,
-        BUDGET_TRANSACTION
+        BUDGET_TRANSACTION;
+
+        Record.Effect whatIsTheEffect() {
+            switch (this) {
+                case BUDGET_TRANSACTION:
+                    return Effect.INCREASE;
+                case TRIP_EXPENSE:
+                    return Effect.DECREASE;
+                default:
+                    throw new UnexpectedEnumValue();
+            }
+
+        }
     }
 
-    protected BudgetRecord(ID sourceTransId, Source source,MonetaryAmount amount) {
+    protected BudgetRecord(ID sourceTransId, Source source, MonetaryAmount amount) {
         super(sourceTransId, source, amount);
     }
 

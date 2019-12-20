@@ -40,7 +40,9 @@ public interface EntityList<E extends Entity> {
 
     boolean contain(ID id);
 
-    Optional<E> search(Function<E, Boolean> function);
+    Optional<E> searchReturnFirst(Function<E, Boolean> function);
+
+    List<E> searchReturnAll(Function<E, Boolean> function);
 
     List<E> getAll();
 

@@ -97,6 +97,7 @@ public class CollectibleTransaction extends Transaction {
 
     public boolean isUserPayer() {
         return mPayer == Payer.USER;
+
     }
 
     // endregion Getter ----------------------------------------------------------------------------

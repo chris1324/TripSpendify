@@ -11,7 +11,7 @@ import com.example.domain.Common.sharedvalueobject.uri.Uri;
 public class Category extends Entity {
 
     // region Factory method -----------------------------------------------------------------------
-    public Result<Category,Err.Create> create(ID id, Name categoryName, Uri iconUri) {
+    public static Result<Category,Err.Create> create(ID id, Name categoryName, Uri iconUri) {
         try {
             Guard.NotNull(id);
             Guard.NotNull(categoryName);

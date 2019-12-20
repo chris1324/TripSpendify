@@ -70,10 +70,14 @@ class UnmodifiableEntityList<E extends Entity> implements EntityList<E> {
     }
 
     @Override
-    public Optional<E> search(Function<E, Boolean> function) {
-        return mEntityList.search(function);
+    public Optional<E> searchReturnFirst(Function<E, Boolean> function) {
+        return mEntityList.searchReturnFirst(function);
     }
 
+    @Override
+    public List<E> searchReturnAll(Function<E, Boolean> function) {
+        return mEntityList.searchReturnAll(function);
+    }
 
     // ---------------------------------------------------------------------------------------------
 

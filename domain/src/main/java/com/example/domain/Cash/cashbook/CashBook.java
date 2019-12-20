@@ -70,9 +70,9 @@ public class CashBook extends Book {
     }
 
     // -------------------------------------Cash Transaction----------------------------------------
-    void addCashTransaction(CashTransaction cashTransaction) {
+    void addCashTransaction(CashTransaction cashTransaction, CashRecord record) {
         mCashTransactions.put(cashTransaction);
-        this.addCashRecord(createRecordFromCashTrans(cashTransaction));
+        this.addCashRecord(record);
     }
 
     void removeCashTransaction(ID transactionId) {
@@ -81,16 +81,7 @@ public class CashBook extends Book {
     }
 
     // region helper method ------------------------------------------------------------------------
-    private CashRecord createRecordFromCashTrans(CashTransaction transaction) {
-        return CashRecord
-                .create(
-                        transaction.getId(),
-                        CashRecord.Source.CASH_TRANSACTION,
-                        transaction.getAmount()
-                )
-                .getValue()
-                .orElseThrow(ImpossibleState::new);
-    }
+
     // endregion helper method ---------------------------------------------------------------------
 
     // region Getter -------------------------------------------------------------------------------

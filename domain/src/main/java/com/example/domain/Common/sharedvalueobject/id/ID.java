@@ -7,7 +7,7 @@ public class ID {
 
     private final String uuid;
 
-    public static ID existngId(String uuid){
+    public static ID existingId(String uuid){
         if (uuid.isEmpty()) throw new RuntimeException("uuid cant be empty");
         return new ID(uuid);
     }

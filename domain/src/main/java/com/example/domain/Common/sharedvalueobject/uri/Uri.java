@@ -6,8 +6,8 @@ import com.example.domain.Common.errorhanding.result.Result;
 public class Uri {
 
     // region Factory method -----------------------------------------------------------------------
-    public Result<Uri,Err.Create> create (String uri){
-        if (Check.isNull(uri)) return Result.err(Err.Create.NULL_URI);
+    public static Result<Uri,Err.Create> create (String uri){
+        if (Check.isNull(uri)) return Result.err(Err.Create.URI_NULL);
 
         return Result.ok(new Uri(uri));
     }
@@ -16,8 +16,8 @@ public class Uri {
     // region Error Class --------------------------------------------------------------------------
     public static class Err{
         public enum Create {
-            NULL_URI,
-            INVALID_URI
+            URI_NULL,
+            URI_INVALID
         }
     }
     // endregion Error Class -----------------------------------------------------------------------

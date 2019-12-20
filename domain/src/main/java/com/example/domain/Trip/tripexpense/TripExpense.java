@@ -74,7 +74,6 @@ public class TripExpense extends Transaction {
     public static class Err {
         public enum Create {
             NULL_ARGUMENT,
-            // Total
             PAYMENT_TOTAL_NOT_TALLY,
             SPLIT_TOTAL_NOT_TALLY
         }

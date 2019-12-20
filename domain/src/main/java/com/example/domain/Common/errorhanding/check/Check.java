@@ -1,6 +1,7 @@
 package com.example.domain.Common.errorhanding.check;
 
 import java.util.List;
+import java.util.Map;
 
 public class Check {
 
@@ -16,7 +17,11 @@ public class Check {
         return s.length() == 0;
     }
 
-    public static boolean isEmptyString(List list) {
+    public static boolean isEmptyList(List list) {
         return list.size() == 0;
+    }
+
+    public static boolean isEmptyMap(Map map){
+        return map.size() == 0;
     }
 }

@@ -20,6 +20,11 @@ public class CollectibleRecordService {
             DIFFERENT_TRIP,
             NO_BORROWING_OR_LENDING
         }
+
+        public enum RemoveRecord {
+            DIFFERENT_TRIP,
+            SOURCE_STILL_EXIST
+        }
     }
     // endregion Error Class -----------------------------------------------------------------------
 
@@ -46,6 +51,22 @@ public class CollectibleRecordService {
         return Outcome.ok();
     }
 
+    public Outcome<Err.RemoveRecord> removeRecord(TripBook tripBk,
+                                                  CollectibleBook collectibleBk,
+                                                  ID tripExpenseId) {
+        // Validation
+        // -- Validate Trip
+        if (isDifferentTrip(tripBk, collectibleBk))
+            return Outcome.err(Err.RemoveRecord.DIFFERENT_TRIP);
+
+        // -- Validate Source delete
+        boolean sourceStillExist = !tripBk.getTripExpenses().contain(tripExpenseId);
+        if (sourceStillExist) return Outcome.err(Err.RemoveRecord.SOURCE_STILL_EXIST);
+
+        // Success
+        collectibleBk.removeCollectibleRecord(tripExpenseId);
+        return Outcome.ok();
+    }
 
 
     // region helper method ------------------------------------------------------------------------

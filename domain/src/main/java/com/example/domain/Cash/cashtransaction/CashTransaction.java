@@ -45,23 +45,7 @@ public class CashTransaction extends Transaction {
         WITHDRAWAL,
         DEPOSIT,
         ADJUSTMENT_UP,
-        ADJUSTMENT_DOWN;
-
-         boolean getEffect(Type type){
-            switch (type){
-
-                case WITHDRAWAL:
-                    break;
-                case DEPOSIT:
-                    break;
-                case ADJUSTMENT_UP:
-                    break;
-                case ADJUSTMENT_DOWN:
-                    break;
-            }
-
-            return false;
-        }
+        ADJUSTMENT_DOWN
     }
 
     private final Type mTransactionType;

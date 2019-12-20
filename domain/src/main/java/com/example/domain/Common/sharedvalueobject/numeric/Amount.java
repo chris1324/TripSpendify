@@ -17,8 +17,15 @@ public class Amount implements Numeric<Amount> {
 
     // region Factory method -----------------------------------------------------------------------
     public static Result<Amount, Err.Create> create(BigDecimal amount) {
-        if (Check.isNull(amount)) return Result.err(Err.Create.NULL_AMOUNT);
+        if (Check.isNull(amount)) return Result.err(Err.Create.AMOUNT_NULL);
         return Result.ok(new Amount(amount));
+    }
+
+    public static Result<Amount, Err.Create> create(String amount) {
+        if (Check.isNull(amount)) return Result.err(Err.Create.AMOUNT_NULL);
+        return Result.ok(create(new BigDecimal(amount))
+                .getValue()
+                .orElseThrow(ImpossibleState::new));
     }
 
     public static Amount createZeroAmount() {
@@ -30,7 +37,7 @@ public class Amount implements Numeric<Amount> {
     // region Error Class --------------------------------------------------------------------------
     public static class Err {
         public enum Create {
-            NULL_AMOUNT
+            AMOUNT_NULL
         }
     }
 

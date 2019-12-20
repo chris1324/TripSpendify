@@ -1,15 +1,14 @@
 package com.example.domain.Collectible.collectiblerecord;
 
+import com.example.domain.Common.errorhanding.exception.UnexpectedEnumValue;
 import com.example.domain.Common.errorhanding.exception.UnhandledError;
 import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.guard.Guard;
 import com.example.domain.Common.errorhanding.result.Result;
 import com.example.domain.Common.baseclass.record.Record;
-import com.example.domain.Common.sharedvalueobject.numeric.Amount;
 import com.example.domain.Common.sharedvalueobject.numeric.MonetaryAmount;
 
-import java.util.List;
 import java.util.Map;
 
 public class CollectibleRecord extends Record<CollectibleRecord.Source, Map<ID, MonetaryAmount>> {
@@ -43,23 +42,23 @@ public class CollectibleRecord extends Record<CollectibleRecord.Source, Map<ID, 
     public enum Source {
         TRIP_EXPENSE_BORROWING,
         TRIP_EXPENSE_LENDING,
-        COLLECTIBLE_SETTLEMENT_MADE,
-        COLLECTIBLE_SETTLEMENT_ACCEPTED,
-        COLLECTIBLE_CONTRIBUTION_MADE,
-        COLLECTIBLE_CONTRIBUTION_ACCEPTED;
+        COLL_SETTLEMENT_MADE,
+        COLL_SETTLEMENT_ACCEPTED,
+        COLL_CONTRIBUTION_MADE,
+        COLL_CONTRIBUTION_ACCEPTED;
 
-        Record.Effect whatIsTheEffect(Source source) {
-            switch (source) {
+        Record.Effect whatIsTheEffect() {
+            switch (this) {
                 case TRIP_EXPENSE_LENDING:
-                case COLLECTIBLE_SETTLEMENT_MADE:
-                case COLLECTIBLE_CONTRIBUTION_MADE:
+                case COLL_SETTLEMENT_MADE:
+                case COLL_CONTRIBUTION_MADE:
                     return Effect.INCREASE;
                 case TRIP_EXPENSE_BORROWING:
-                case COLLECTIBLE_SETTLEMENT_ACCEPTED:
-                case COLLECTIBLE_CONTRIBUTION_ACCEPTED:
+                case COLL_SETTLEMENT_ACCEPTED:
+                case COLL_CONTRIBUTION_ACCEPTED:
                     return Effect.DECREASE;
                 default:
-                    throw new UnhandledError();
+                    throw new UnexpectedEnumValue();
             }
         }
     }

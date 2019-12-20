@@ -1,5 +1,5 @@
 package com.example.domain.Common.function;
 
-public interface Function<T, R> {
-    R apply(T t);
+public interface Function<P, R> {
+    R apply(P p);
 }

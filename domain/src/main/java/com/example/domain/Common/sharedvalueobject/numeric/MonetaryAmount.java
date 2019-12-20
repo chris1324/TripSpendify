@@ -19,19 +19,19 @@ public class MonetaryAmount implements Numeric<MonetaryAmount> {
 
     // region Factory method -----------------------------------------------------------------------
     public static Result<MonetaryAmount, Err.Create> create(Amount amount) {
-        if (Check.isNull(amount)) return Result.err(Err.Create.NULL_AMOUNT);
-        if (amount.isNegative()) return Result.err(Err.Create.NEGATIVE_AMOUNT);
-        if (amount.isZero()) return Result.err(Err.Create.ZERO_AMOUNT);
+        if (Check.isNull(amount)) return Result.err(Err.Create.AMOUNT_NULL);
+        if (amount.isNegative()) return Result.err(Err.Create.AMOUNT_NEGATIVE);
+        if (amount.isZero()) return Result.err(Err.Create.AMOUNT_ZERO);
 
         return Result.ok(new MonetaryAmount(amount));
     }
 
     public static Result<MonetaryAmount, Err.Create> create(BigDecimal amountBig) {
-        if (Check.isNull(amountBig)) return Result.err(Err.Create.NULL_AMOUNT);
+        if (Check.isNull(amountBig)) return Result.err(Err.Create.AMOUNT_NULL);
         Amount amount = Amount.create(amountBig).getValue().orElseThrow(ImpossibleState::new);
 
-        if (amount.isNegative()) return Result.err(Err.Create.NEGATIVE_AMOUNT);
-        if (amount.isZero()) return Result.err(Err.Create.ZERO_AMOUNT);
+        if (amount.isNegative()) return Result.err(Err.Create.AMOUNT_NEGATIVE);
+        if (amount.isZero()) return Result.err(Err.Create.AMOUNT_ZERO);
 
         return Result.ok(new MonetaryAmount(amount));
     }
@@ -40,9 +40,9 @@ public class MonetaryAmount implements Numeric<MonetaryAmount> {
     // region Error Class --------------------------------------------------------------------------
     public static class Err {
         public enum Create {
-            NULL_AMOUNT,
-            NEGATIVE_AMOUNT,
-            ZERO_AMOUNT
+            AMOUNT_NULL,
+            AMOUNT_NEGATIVE,
+            AMOUNT_ZERO
         }
     }
     // endregion Error Class -----------------------------------------------------------------------

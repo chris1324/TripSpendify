@@ -1,5 +1,7 @@
 package com.example.domain.Trip.tripexpense.paymentdetail;
 
+import com.example.domain.Common.errorhanding.check.Check;
+import com.example.domain.Common.errorhanding.result.Result;
 import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.errorhanding.answer.Answer;
 import com.example.domain.Common.sharedvalueobject.numeric.MonetaryAmount;
@@ -9,32 +11,62 @@ import java.util.Optional;
 
 public interface PaymentDetail {
 
+    // region Error Class --------------------------------------------------------------------------
+    public enum Err {
+        ARGUMENT_NULL,
+        AMOUNT_NOT_POSITIVE
+    }
+    // endregion Error Class -----------------------------------------------------------------------
+
+    // region Factory method -----------------------------------------------------------------------
+    static Result<PaymentDetail,Err> userPay(MonetaryAmount userPayment) {
+        if (Check.isNull(userPayment)) return Result.err(Err.ARGUMENT_NULL);
+
+        if (userPayment.isNegative()) return Result.err(Err.AMOUNT_NOT_POSITIVE);
+        if (userPayment.isZero()) return Result.err(Err.AMOUNT_NOT_POSITIVE);
+
+        return Result.ok(new UserPay(userPayment));
+    }
+
+    static Result<PaymentDetail,Err> memberPay(Map<ID, MonetaryAmount> memberPayment) {
+        if (Check.isNull(memberPayment)) return Result.err(Err.ARGUMENT_NULL);
+
+        if (Check.isEmptyMap(memberPayment)) return Result.err(Err.ARGUMENT_NULL);
+        if (memberPaymentNotPositive(memberPayment)) return Result.err(Err.AMOUNT_NOT_POSITIVE);
+
+        return Result.ok(new MemberPay(memberPayment));
+    }
+
+    static Result<PaymentDetail,Err> userAndMemberPay(MonetaryAmount userPayment, Map<ID, MonetaryAmount> memberPayment) {
+        if (Check.isNull(userPayment)) return Result.err(Err.ARGUMENT_NULL);
+        if (Check.isNull(memberPayment)) return Result.err(Err.ARGUMENT_NULL);
+
+        if (userPayment.isNegative()) return Result.err(Err.AMOUNT_NOT_POSITIVE);
+        if (userPayment.isZero()) return Result.err(Err.AMOUNT_NOT_POSITIVE);
+
+        if (Check.isEmptyMap(memberPayment)) return Result.err(Err.ARGUMENT_NULL);
+        if (memberPaymentNotPositive(memberPayment)) return Result.err(Err.AMOUNT_NOT_POSITIVE);
+
+        return Result.ok(new UserAndMemberPay(userPayment,memberPayment));
+    }
+
+    static PaymentDetail unpaid() {
+        return new Unpaid();
+    }
+
+    static boolean memberPaymentNotPositive(Map<ID, MonetaryAmount> memberSpending) {
+        for (MonetaryAmount amount:memberSpending.values()){
+            if (!amount.isPositive()) return true;
+        }
+        return  false;
+    }
+    // endregion Factory method---------------------------------------------------------------------
+
     enum Payer{
         USER,
         MEMBER,
         USER_AND_MEMBER,
         UNPAID
-    }
-
-    // TODO: 18/12/2019 Validation!!
-    enum Err{
-
-    }
-
-    static PaymentDetail userPay(MonetaryAmount userPayment) {
-        return new UserPay(userPayment);
-    }
-
-    static PaymentDetail memberPay(Map<ID, MonetaryAmount> memberPayment) {
-        return new MemberPay(memberPayment);
-    }
-
-    static PaymentDetail userAndMemberPay(MonetaryAmount userPayment, Map<ID, MonetaryAmount> memberPayment) {
-        return new UserAndMemberPay(userPayment,memberPayment);
-    }
-
-    static PaymentDetail unpaid() {
-        return new Unpaid();
     }
 
     boolean isPaid();

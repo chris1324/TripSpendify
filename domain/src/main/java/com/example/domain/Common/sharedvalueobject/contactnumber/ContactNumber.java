@@ -6,9 +6,9 @@ import com.example.domain.Common.errorhanding.result.Result;
 public class ContactNumber {
 
     // region Factory method -----------------------------------------------------------------------
-    public Result<ContactNumber,Err.Create> create(String contactNumber){
-        if (Check.isNull(contactNumber)) return Result.err(Err.Create.NULL_CONTRACT_NUMBER);
-        if (Check.isEmptyString(contactNumber)) return Result.err(Err.Create.EMPTY_CONTRACT_NUMBER);
+    public static  Result<ContactNumber,Err.Create> create(String contactNumber){
+        if (Check.isNull(contactNumber)) return Result.err(Err.Create.CONTRACT_NUMBER_NULL);
+        if (Check.isEmptyList(contactNumber)) return Result.err(Err.Create.CONTRACT_NUMBER_EMPTY);
 
         return Result.ok(new ContactNumber(contactNumber));
     }
@@ -18,9 +18,9 @@ public class ContactNumber {
     // region Error Class --------------------------------------------------------------------------
     public static class Err{
         public enum Create{
-            NULL_CONTRACT_NUMBER,
-            EMPTY_CONTRACT_NUMBER,
-            INVALID_CONTRACT_NUMBER
+            CONTRACT_NUMBER_NULL,
+            CONTRACT_NUMBER_EMPTY,
+            CONTRACT_NUMBER_INVALID
         }
     }
     // endregion Error Class -----------------------------------------------------------------------

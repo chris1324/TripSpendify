@@ -1,8 +1,8 @@
 package com.example.domain.Common.baseclass.aggregateroot;
 
-import com.example.domain.Common.domainevent.DomainEvent;
+import com.example.domain.Common.domaineventbus.DomainEvent;
 import com.example.domain.Common.baseclass.entity.Entity;
-import com.example.domain.Common.domainevent.DomainEventBus;
+import com.example.domain.Common.domaineventbus.DomainEventBus;
 import com.example.domain.Common.sharedvalueobject.id.ID;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public abstract class AggregateRoot extends Entity {
 
     protected void addDomainEvent(DomainEvent domainEvent){
         mDomainEvent.add(domainEvent);
-        DomainEventBus.markAggregate(this);
+        DomainEventBus.getInstance().markAggregate(this);
     }
 
     public void clearEvent(){

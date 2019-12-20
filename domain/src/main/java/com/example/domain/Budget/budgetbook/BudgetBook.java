@@ -5,7 +5,6 @@ import com.example.domain.Budget.budgetrecord.BudgetRecord;
 import com.example.domain.Common.sharedvalueobject.id.ID;
 import com.example.domain.Common.baseclass.book.Book;
 import com.example.domain.Common.entitylist.EntityList;
-import com.example.domain.Common.errorhanding.exception.ImpossibleState;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
 import com.example.domain.Common.errorhanding.guard.Guard;
 import com.example.domain.Common.errorhanding.result.Result;
@@ -73,10 +72,10 @@ public class BudgetBook extends Book {
     }
 
     // -----------------------------------Budget Transaction----------------------------------------
-    void addBudgetTransaction(BudgetTransaction transaction) {
+    void addBudgetTransaction(BudgetTransaction transaction, BudgetRecord budgetRecord) {
         this.removeBudgetTransWithThisDay(transaction.getDate());
         mBudgetTransactions.put(transaction);
-        this.addBudgetRecord(createRecordFromBudgetTrans(transaction));
+        this.addBudgetRecord(budgetRecord);
     }
 
     void removeBudgetTransaction(ID transactionId) {
@@ -87,21 +86,11 @@ public class BudgetBook extends Book {
     // region helper method ------------------------------------------------------------------------
     private void removeBudgetTransWithThisDay(Date date) {
         mBudgetTransactions
-                .search(budgetTransaction -> budgetTransaction.getDate().isSameDate(date))
+                .searchReturnFirst(budgetTransaction -> budgetTransaction.getDate().isSameDate(date))
                 .map(BudgetTransaction::getId)
                 .ifPresent(this::removeBudgetTransaction);
     }
 
-    private BudgetRecord createRecordFromBudgetTrans(BudgetTransaction transaction) {
-        return BudgetRecord
-                .create(
-                        transaction.getId(),
-                        BudgetRecord.Source.BUDGET_TRANSACTION,
-                        transaction.getAmount()
-                )
-                .getValue()
-                .orElseThrow(ImpossibleState::new);
-    }
     // endregion helper method ---------------------------------------------------------------------
 
     // region Getter -------------------------------------------------------------------------------

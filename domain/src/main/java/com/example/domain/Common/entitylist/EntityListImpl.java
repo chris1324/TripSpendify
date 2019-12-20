@@ -40,7 +40,7 @@ class EntityListImpl<E extends Entity> implements EntityList<E> {
 
     @Override
     public void remove(Function<E, Boolean> function) {
-        this.search(function).ifPresent(e -> EntityListImpl.this.remove(e.getId()));
+        this.searchReturnFirst(function).ifPresent(e -> EntityListImpl.this.remove(e.getId()));
     }
 
     @Override
@@ -92,7 +92,7 @@ class EntityListImpl<E extends Entity> implements EntityList<E> {
     }
 
     @Override
-    public Optional<E> search(Function<E, Boolean> criteria) {
+    public Optional<E> searchReturnFirst(Function<E, Boolean> criteria) {
         final List<E> entities = getAll();
         for (E entity : entities) {
             if (criteria.apply(entity)) {
@@ -102,11 +102,24 @@ class EntityListImpl<E extends Entity> implements EntityList<E> {
         return Optional.empty();
     }
 
+    @Override
+    public List<E> searchReturnAll(Function<E, Boolean> criteria) {
+        List<E> searchResult = new ArrayList<>();
+        final List<E> entities = getAll();
+
+        for (E entity : entities) {
+            if (criteria.apply(entity)) {
+                searchResult.add(entity);
+            }
+        }
+        return searchResult;
+    }
+
     // ---------------------------------------------------------------------------------------------
 
     @Override
     public EntityList<E> unmodifiable() {
-        return  EntityList.unmodifiableList(this);
+        return EntityList.unmodifiableList(this);
     }
 
     // region helper method ------------------------------------------------------------------------

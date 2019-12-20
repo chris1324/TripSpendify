@@ -3,6 +3,7 @@ package com.example.domain.Trip.tripbook;
 import com.example.domain.Common.baseclass.book.Book;
 import com.example.domain.Common.errorhanding.check.Check;
 import com.example.domain.Common.errorhanding.exception.NullArgumentException;
+import com.example.domain.Common.errorhanding.exception.UnexpectedEnumValue;
 import com.example.domain.Common.errorhanding.outcome.Outcome;
 import com.example.domain.Common.sharedvalueobject.date.Date;
 import com.example.domain.Common.sharedvalueobject.id.ID;
@@ -11,6 +12,11 @@ import com.example.domain.Common.sharedvalueobject.name.Name;
 import com.example.domain.Common.sharedvalueobject.uri.Uri;
 import com.example.domain.Common.errorhanding.guard.Guard;
 import com.example.domain.Common.errorhanding.result.Result;
+import com.example.domain.Trip.domainevent.CategoryRemoved;
+import com.example.domain.Trip.domainevent.MemberRemoved;
+import com.example.domain.Trip.domainevent.TripBookCreated;
+import com.example.domain.Trip.domainevent.TripExpenseAdded;
+import com.example.domain.Trip.domainevent.TripExpenseRemoved;
 import com.example.domain.Trip.tripexpense.TripExpense;
 import com.example.domain.Trip.tripmember.TripMember;
 import com.example.domain.Trip.category.Category;
@@ -42,7 +48,7 @@ public class TripBook extends Book {
         }
 
         // List empty checking
-        if (Check.isEmptyString(categories)) return Result.err(Err.Create.EMPTY_CATEGORY);
+        if (Check.isEmptyList(categories)) return Result.err(Err.Create.EMPTY_CATEGORY);
 
         // StartDate and EndDate
         if (isInvalidDates(startDate, endDate)) return Result.err(Err.Create.START_AFTER_END_DATE);
@@ -63,9 +69,7 @@ public class TripBook extends Book {
     public static class Err {
         public enum Create {
             NULL_ARGUMENT,
-            // Empty List
             EMPTY_CATEGORY,
-            // Start & End date
             START_AFTER_END_DATE
         }
 
@@ -83,9 +87,10 @@ public class TripBook extends Book {
         }
 
         public enum AddExpense {
-            INVALID_PAYER,
-            INVALID_SPENDER,
-            INVALID_CATEGORY
+            PAYER_INVALID,
+            SPENDER_INVALID,
+            CATEGORY_INVALID,
+            USER_NOT_INVOLVED
         }
     }
     // endregion Error Class -----------------------------------------------------------------------
@@ -116,6 +121,8 @@ public class TripBook extends Book {
         mPhotoUri = photoUri;
         this.mStartDate = startDate;
         this.mEndDate = endDate;
+
+        super.addDomainEvent(new TripBookCreated(this.getId()));
     }
     // endregion Variables and Constructor ---------------------------------------------------------
 
@@ -156,14 +163,17 @@ public class TripBook extends Book {
         mCategories.put(category);
     }
 
-    public Outcome<Err.RemoveCategory> removeCategory(ID categoryId) {
-        boolean hasTrans = doCategoryHasTrans(categoryId);
+    private Outcome<Err.RemoveCategory> removeCategory(ID categoryId) {
+        // !! Currently not supported !!
+        boolean hasTrans = this.doCategoryHasTrans(categoryId);
         if (hasTrans) return Outcome.err(Err.RemoveCategory.HAD_TRANSACTION);
 
-        boolean isLastCategory = isLastCategory(categoryId);
+        boolean isLastCategory = this.isLastCategory(categoryId);
         if (isLastCategory) return Outcome.err(Err.RemoveCategory.LAST_CATEGORY);
 
+        // Success
         mCategories.remove(categoryId);
+        super.addDomainEvent(new CategoryRemoved(this.getId(), categoryId));
         return Outcome.ok();
     }
 
@@ -176,9 +186,10 @@ public class TripBook extends Book {
     public Outcome<Err.RemoveMember> removeMember(ID tripMemberId) {
         boolean hasTrans = doMemberHasTrans(tripMemberId);
         if (hasTrans) return Outcome.err(Err.RemoveMember.HAD_TRANSACTION);
-        // TODO: 18/12/2019 removeMember: allow for remove
 
+        // Success
         mTripMembers.remove(tripMemberId);
+        super.addDomainEvent(new MemberRemoved(this.getId(), tripMemberId));
         return Outcome.ok();
     }
 
@@ -187,28 +198,62 @@ public class TripBook extends Book {
     public Outcome<Err.AddExpense> addExpense(TripExpense tripExpense) {
         // Check if payer is valid Member
         boolean hasInvalidPayer = isInvalidMember(tripExpense.getPayers());
-        if (hasInvalidPayer) return Outcome.err(Err.AddExpense.INVALID_PAYER);
+        if (hasInvalidPayer) return Outcome.err(Err.AddExpense.PAYER_INVALID);
 
         // Check if spender is valid Member
         boolean hasInvalidSpender = isInvalidMember(tripExpense.getSpenders());
-        if (hasInvalidSpender) return Outcome.err(Err.AddExpense.INVALID_SPENDER);
+        if (hasInvalidSpender) return Outcome.err(Err.AddExpense.SPENDER_INVALID);
 
         // Check if category is valid
         boolean isInvalidCategory = isInvalidCategory(tripExpense.getCategoryId());
-        if (isInvalidCategory) return Outcome.err(Err.AddExpense.INVALID_CATEGORY);
+        if (isInvalidCategory) return Outcome.err(Err.AddExpense.CATEGORY_INVALID);
 
-        // TODO: 18/12/2019 addExpense: Check if User involved
+        // Check if User is involved
+        boolean userNotInvolved = userNotInvolved(tripExpense);
+        if (userNotInvolved) return Outcome.err(Err.AddExpense.USER_NOT_INVOLVED);
 
         // Proceed
-        // TODO: 14/12/2019 addExpense DomainEvent
         mTripExpenses.put(tripExpense);
+        super.addDomainEvent(new TripExpenseAdded(this.getId(), tripExpense.getId()));
         return Outcome.ok();
+    }
+
+    private boolean userNotInvolved(TripExpense tripExpense) {
+        boolean userIsPaying;
+        boolean userIsSpending;
+
+        switch (tripExpense.getPaymentDetail().whoIsPaying().getAnswer()) {
+            case USER:
+            case USER_AND_MEMBER:
+            case UNPAID:
+                userIsPaying = true;
+                break;
+            case MEMBER:
+                userIsPaying = false;
+                break;
+            default:
+                throw new UnexpectedEnumValue();
+        }
+        switch (tripExpense.getSplittingDetail().whoIsSpending().getAnswer()) {
+            case USER:
+            case USER_AND_MEMBER:
+                userIsSpending = true;
+                break;
+            case MEMBER:
+                userIsSpending = false;
+                break;
+            default:
+                throw new UnexpectedEnumValue();
+        }
+
+        return !(userIsPaying) && !(userIsSpending);
+
     }
 
     public void removeExpense(ID tripExpenseId) {
         mTripExpenses.remove(tripExpenseId);
+        super.addDomainEvent(new TripExpenseRemoved(this.getId(), tripExpenseId));
     }
-
 
     // region helper method ------------------------------------------------------------------------
     // --------------------------------------Date---------------------------------------------------
