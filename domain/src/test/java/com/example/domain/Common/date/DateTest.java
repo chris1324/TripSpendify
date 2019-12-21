@@ -1,6 +1,6 @@
 package com.example.domain.Common.date;
 
-import com.example.domain.Common.sharedvalueobject.date.Date;
+import com.example.domain.Common.sharedValueObject.date.Date;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;

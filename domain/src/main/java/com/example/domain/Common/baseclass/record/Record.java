@@ -1,7 +1,7 @@
 package com.example.domain.Common.baseclass.record;
 
 import com.example.domain.Common.baseclass.entity.Entity;
-import com.example.domain.Common.sharedvalueobject.id.ID;
+import com.example.domain.Common.sharedValueObject.id.ID;
 
 
 public abstract  class Record<Source, Amount> extends Entity {

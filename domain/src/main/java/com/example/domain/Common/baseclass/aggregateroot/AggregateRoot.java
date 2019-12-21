@@ -1,9 +1,9 @@
 package com.example.domain.Common.baseclass.aggregateroot;
 
-import com.example.domain.Common.domaineventbus.DomainEvent;
+import com.example.domain.Common.domaineEventBus.DomainEvent;
 import com.example.domain.Common.baseclass.entity.Entity;
-import com.example.domain.Common.domaineventbus.DomainEventBus;
-import com.example.domain.Common.sharedvalueobject.id.ID;
+import com.example.domain.Common.domaineEventBus.DomainEventBus;
+import com.example.domain.Common.sharedValueObject.id.ID;
 
 import java.util.ArrayList;
 import java.util.Collections;

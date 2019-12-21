@@ -1,10 +1,5 @@
 package com.example.domain.Common.helloworld;
 
-import com.example.domain.Collectible.collectiblerecord.CollectibleRecord;
-
-import java.math.BigDecimal;
-import java.util.UUID;
-
 
 public class HelloWorld {
     public static void main(String[] args) {

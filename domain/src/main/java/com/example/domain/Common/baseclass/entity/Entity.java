@@ -1,6 +1,6 @@
 package com.example.domain.Common.baseclass.entity;
 
-import com.example.domain.Common.sharedvalueobject.id.ID;
+import com.example.domain.Common.sharedValueObject.id.ID;
 
 import java.util.Objects;
 

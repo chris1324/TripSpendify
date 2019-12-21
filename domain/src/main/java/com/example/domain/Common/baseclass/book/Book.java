@@ -1,7 +1,7 @@
 package com.example.domain.Common.baseclass.book;
 
 import com.example.domain.Common.baseclass.aggregateroot.AggregateRoot;
-import com.example.domain.Common.sharedvalueobject.id.ID;
+import com.example.domain.Common.sharedValueObject.id.ID;
 
 public abstract class Book extends AggregateRoot {
     private final ID mTripBookID;

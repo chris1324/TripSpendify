@@ -1,10 +1,10 @@
 package com.example.domain.Common.baseclass.transaction;
 
 import com.example.domain.Common.baseclass.entity.Entity;
-import com.example.domain.Common.sharedvalueobject.numeric.MonetaryAmount;
-import com.example.domain.Common.sharedvalueobject.id.ID;
-import com.example.domain.Common.sharedvalueobject.date.Date;
-import com.example.domain.Common.sharedvalueobject.note.Note;
+import com.example.domain.Common.sharedValueObject.numeric.MonetaryAmount;
+import com.example.domain.Common.sharedValueObject.id.ID;
+import com.example.domain.Common.sharedValueObject.date.Date;
+import com.example.domain.Common.sharedValueObject.note.Note;
 
 public abstract class Transaction extends Entity {
 
