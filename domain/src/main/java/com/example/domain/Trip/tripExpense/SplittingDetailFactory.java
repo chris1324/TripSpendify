@@ -1,11 +1,11 @@
 package com.example.domain.Trip.tripExpense;
 
-import com.example.domain.Common.errorhanding.exception.ImpossibleState;
-import com.example.domain.Common.errorhanding.result.Result;
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.sharedValueObject.numeric.Amount;
-import com.example.domain.Common.sharedValueObject.numeric.MonetaryAmount;
 import com.example.domain.Trip.tripExpense.splittingdetail.SplittingDetail;
+import com.example.domain.Shared.errorhanding.exception.ImpossibleState;
+import com.example.domain.Shared.errorhanding.result.Result;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.valueObject.numeric.Amount;
+import com.example.domain.Shared.valueObject.numeric.MonetaryAmount;
 
 import java.util.HashMap;
 import java.util.Map;

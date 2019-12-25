@@ -1,11 +1,11 @@
 package com.example.domain.Cash.cashBook;
 
 import com.example.domain.Cash.cashTransaction.CashTransaction;
-import com.example.domain.Common.baseclass.book.Book;
-import com.example.domain.Common.errorhanding.outcome.Outcome;
-import com.example.domain.Common.sharedValueObject.date.Date;
-import com.example.domain.Common.sharedValueObject.id.ID;
+import com.example.domain.Shared.commandBaseClass.book.Book;
+import com.example.domain.Shared.errorhanding.outcome.Outcome;
 import com.example.domain.Trip.tripBook.TripBook;
+import com.example.domain.Shared.valueObject.date.Date;
+import com.example.domain.Shared.valueObject.id.ID;
 
 public class CashTransactionService {
 
@@ -19,7 +19,7 @@ public class CashTransactionService {
     }
 
     // endregion Error Class -----------------------------------------------------------------------
-    public Outcome<Err.CashTrans> addCashTrans(TripBook tripBk,
+    public Outcome<Err.CashTrans> saveCashTrans(TripBook tripBk,
                                                 CashBook cashBk,
                                                 CashRecordFactory factory,
                                                 CashTransaction cashTrans) {
@@ -31,7 +31,7 @@ public class CashTransactionService {
             return Outcome.err(Err.CashTrans.DATE_INVALID);
 
         // Success
-        cashBk.addCashTransaction(cashTrans, factory.create(cashTrans));
+        cashBk.saveCashTransaction(cashTrans, factory.create(cashTrans));
         return Outcome.ok();
     }
 

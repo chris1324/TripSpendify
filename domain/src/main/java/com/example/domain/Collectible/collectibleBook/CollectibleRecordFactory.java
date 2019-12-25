@@ -2,13 +2,13 @@ package com.example.domain.Collectible.collectibleBook;
 
 import com.example.domain.Collectible.collectibleRecord.CollectibleRecord;
 import com.example.domain.Collectible.collectibleTransaction.CollectibleTransaction;
-import com.example.domain.Common.errorhanding.exception.ImpossibleState;
-import com.example.domain.Common.errorhanding.exception.UnexpectedEnumValue;
-import com.example.domain.Common.errorhanding.pair.Pair;
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.sharedValueObject.numeric.Amount;
-import com.example.domain.Common.sharedValueObject.numeric.MonetaryAmount;
+import com.example.domain.Shared.errorhanding.exception.ImpossibleState;
+import com.example.domain.Shared.errorhanding.exception.UnexpectedEnumValue;
+import com.example.domain.Shared.errorhanding.pair.Pair;
 import com.example.domain.Trip.tripExpense.TripExpense;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.valueObject.numeric.Amount;
+import com.example.domain.Shared.valueObject.numeric.MonetaryAmount;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class CollectibleRecordFactory {
     }
 
     // region helper method ------------------------------------------------------------------------
-    private CollectibleRecord.Source getSourceFromCollTrans(CollectibleTransaction transaction) {
+    private CollectibleRecord.SourceType getSourceFromCollTrans(CollectibleTransaction transaction) {
         // Prepare
         CollectibleTransaction.Type transactionType = transaction.getTransactionType();
         boolean userIsPayer = transaction.isUserPayer();
@@ -48,11 +48,11 @@ public class CollectibleRecordFactory {
         // Compare and Return
         switch (transactionType) {
             case CONTRIBUTION:
-                if (userIsPayer) return CollectibleRecord.Source.COLL_CONTRIBUTION_MADE;
-                return CollectibleRecord.Source.COLL_CONTRIBUTION_ACCEPTED;
+                if (userIsPayer) return CollectibleRecord.SourceType.COLL_CONTRIBUTION_MADE;
+                return CollectibleRecord.SourceType.COLL_CONTRIBUTION_ACCEPTED;
             case SETTLEMENT:
-                if (userIsPayer) return CollectibleRecord.Source.COLL_SETTLEMENT_MADE;
-                return CollectibleRecord.Source.COLL_SETTLEMENT_ACCEPTED;
+                if (userIsPayer) return CollectibleRecord.SourceType.COLL_SETTLEMENT_MADE;
+                return CollectibleRecord.SourceType.COLL_SETTLEMENT_ACCEPTED;
             default:
                 throw new UnexpectedEnumValue();
         }
@@ -123,7 +123,7 @@ public class CollectibleRecordFactory {
         return CollectibleRecord
                 .create(
                         tripExpense.getId(),
-                        CollectibleRecord.Source.TRIP_EXPENSE_LENDING,
+                        CollectibleRecord.SourceType.TRIP_EXPENSE_LENDING,
                         borrowerDetail)
                 .getValue()
                 .orElseThrow(ImpossibleState::new);
@@ -163,7 +163,7 @@ public class CollectibleRecordFactory {
         return CollectibleRecord
                 .create(
                         tripExpense.getId(),
-                        CollectibleRecord.Source.TRIP_EXPENSE_LENDING,
+                        CollectibleRecord.SourceType.TRIP_EXPENSE_LENDING,
                         lenderDetail)
                 .getValue()
                 .orElseThrow(ImpossibleState::new);

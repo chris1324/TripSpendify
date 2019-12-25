@@ -1,22 +1,22 @@
 package com.example.domain.Budget.budgetBook;
 
 import com.example.domain.Budget.budgetRecord.BudgetRecord;
-import com.example.domain.Common.baseclass.book.Book;
-import com.example.domain.Common.errorhanding.answer.Answer;
-import com.example.domain.Common.errorhanding.exception.UnhandledError;
-import com.example.domain.Common.errorhanding.outcome.Outcome;
-import com.example.domain.Common.sharedValueObject.date.Date;
-import com.example.domain.Common.sharedValueObject.id.ID;
+import com.example.domain.Shared.commandBaseClass.book.Book;
+import com.example.domain.Shared.errorhanding.answer.Answer;
+import com.example.domain.Shared.errorhanding.exception.UnhandledError;
+import com.example.domain.Shared.errorhanding.outcome.Outcome;
 import com.example.domain.Trip.tripBook.TripBook;
 import com.example.domain.Trip.tripExpense.TripExpense;
 import com.example.domain.Trip.tripExpense.splittingdetail.SplittingDetail;
+import com.example.domain.Shared.valueObject.date.Date;
+import com.example.domain.Shared.valueObject.id.ID;
 
 import java.util.Optional;
 
 public class BudgetRecordService {
     // region Error Class --------------------------------------------------------------------------\
     public static class Err {
-        public enum AddRecord {
+        public enum SaveRecord {
             SOURCE_TRANS_NOT_EXIST,
             DIFFERENT_TRIP,
             INVALID_DATE,
@@ -30,29 +30,29 @@ public class BudgetRecordService {
     }
     // endregion Error Class -----------------------------------------------------------------------
 
-    public Outcome<Err.AddRecord> addRecord(TripBook tripBk,
-                                            BudgetBook budgetBk,
-                                            ID tripExpenseId) {
+    public Outcome<Err.SaveRecord> saveRecord(TripBook tripBk,
+                                              BudgetBook budgetBk,
+                                              ID tripExpenseId) {
         // Validation
-        // -- Validate Source Trans exist
+        // -- Validate RecordSource Trans exist
         Optional<TripExpense> sourceTrans = tripBk.getTripExpenses().get(tripExpenseId);
-        if (!sourceTrans.isPresent()) return Outcome.err(Err.AddRecord.SOURCE_TRANS_NOT_EXIST);
+        if (!sourceTrans.isPresent()) return Outcome.err(Err.SaveRecord.SOURCE_TRANS_NOT_EXIST);
 
         // -- Validate Trip & Date
         if (isDifferentTrip(tripBk, budgetBk))
-            return Outcome.err(Err.AddRecord.DIFFERENT_TRIP);
+            return Outcome.err(Err.SaveRecord.DIFFERENT_TRIP);
         if (notDuringTrip(tripBk, sourceTrans.get().getDate()))
-            return Outcome.err(Err.AddRecord.INVALID_DATE);
+            return Outcome.err(Err.SaveRecord.INVALID_DATE);
 
         // -- Validate User is spending
-        if (userNotSpending(sourceTrans.get())) return Outcome.err(Err.AddRecord.USER_NOT_SPENDING);
+        if (userNotSpending(sourceTrans.get())) return Outcome.err(Err.SaveRecord.USER_NOT_SPENDING);
 
         // Success
-        budgetBk.addBudgetRecord(createRecordFromTripExpense(sourceTrans.get()));
+        budgetBk.saveBudgetRecord(createRecordFromTripExpense(sourceTrans.get()));
         return Outcome.ok();
     }
 
-
+    @Deprecated
     public Outcome<Err.RemoveRecord> removeRecord(TripBook tripBk,
                                                   BudgetBook budgetBk,
                                                   ID tripExpenseID){
@@ -60,7 +60,7 @@ public class BudgetRecordService {
         // -- Validate Trip
         if (isDifferentTrip(tripBk, budgetBk)) return Outcome.err(Err.RemoveRecord.DIFFERENT_TRIP);
 
-        // -- Validate Source delete
+        // -- Validate RecordSource delete
         boolean sourceStillExist = !tripBk.getTripExpenses().contain(tripExpenseID);
         if (sourceStillExist) return Outcome.err(Err.RemoveRecord.SOURCE_STILL_EXIST);
 
@@ -96,7 +96,7 @@ public class BudgetRecordService {
         return BudgetRecord
                 .create(
                         tripExpense.getId(),
-                        BudgetRecord.Source.TRIP_EXPENSE,
+                        BudgetRecord.SourceType.TRIP_EXPENSE,
                         tripExpense.getSplittingDetail().getUserSpending().orElseThrow(IllegalAccessError::new))
                 .getValue()
                 .orElseThrow(IllegalAccessError::new);

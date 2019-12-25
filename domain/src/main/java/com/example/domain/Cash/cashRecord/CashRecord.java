@@ -1,18 +1,18 @@
 package com.example.domain.Cash.cashRecord;
 
-import com.example.domain.Common.errorhanding.exception.UnexpectedEnumValue;
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.errorhanding.guard.Guard;
-import com.example.domain.Common.errorhanding.exception.NullArgumentException;
-import com.example.domain.Common.errorhanding.result.Result;
-import com.example.domain.Common.baseclass.record.Record;
-import com.example.domain.Common.sharedValueObject.numeric.MonetaryAmount;
+import com.example.domain.Shared.errorhanding.exception.UnexpectedEnumValue;
+import com.example.domain.Shared.commandBaseClass.record.BookRecord;
+import com.example.domain.Shared.errorhanding.exception.NullArgumentException;
+import com.example.domain.Shared.errorhanding.guard.Guard;
+import com.example.domain.Shared.errorhanding.result.Result;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.valueObject.numeric.MonetaryAmount;
 
-public class CashRecord extends Record<CashRecord.Source, MonetaryAmount> {
+public class CashRecord extends BookRecord<CashRecord.SourceType, MonetaryAmount> {
 
     // region Factory method -----------------------------------------------------------------------
     public static Result<CashRecord, Err.Create> create(ID sourceTransId,
-                                                        Source source,
+                                                        SourceType source,
                                                         MonetaryAmount amount) {
         try {
             Guard.NotNull(sourceTransId);
@@ -35,7 +35,7 @@ public class CashRecord extends Record<CashRecord.Source, MonetaryAmount> {
     // endregion Error Class -----------------------------------------------------------------------
 
     // region Variables and Constructor ------------------------------------------------------------
-    public enum Source {
+    public enum SourceType implements BookRecord.Source {
         TRIP_EXPENSE,
         CASH_TRANS_DEPOSIT,
         CASH_TRANS_WITHDRAWAL,
@@ -46,7 +46,8 @@ public class CashRecord extends Record<CashRecord.Source, MonetaryAmount> {
         COLL_TRANS_CONTRIBUTION_MADE,
         COLL_TRANS_CONTRIBUTION_ACCEPTED;
 
-        Record.Effect whatIsTheEffect() {
+        @Override
+        public Effect effectOnBalance() {
             switch (this) {
                 case CASH_TRANS_DEPOSIT:
                 case CASH_TRANS_ADJUST_UP:
@@ -65,7 +66,7 @@ public class CashRecord extends Record<CashRecord.Source, MonetaryAmount> {
         }
     }
 
-    protected CashRecord(ID sourceTransId, Source source, MonetaryAmount amount) {
+    protected CashRecord(ID sourceTransId, SourceType source, MonetaryAmount amount) {
         super(sourceTransId, source, amount);
     }
 

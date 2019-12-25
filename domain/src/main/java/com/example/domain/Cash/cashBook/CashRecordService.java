@@ -2,15 +2,15 @@ package com.example.domain.Cash.cashBook;
 
 import com.example.domain.Collectible.collectibleBook.CollectibleBook;
 import com.example.domain.Collectible.collectibleTransaction.CollectibleTransaction;
-import com.example.domain.Common.baseclass.book.Book;
-import com.example.domain.Common.errorhanding.answer.Answer;
-import com.example.domain.Common.errorhanding.exception.UnhandledError;
-import com.example.domain.Common.errorhanding.outcome.Outcome;
-import com.example.domain.Common.sharedValueObject.date.Date;
-import com.example.domain.Common.sharedValueObject.id.ID;
+import com.example.domain.Shared.commandBaseClass.book.Book;
+import com.example.domain.Shared.errorhanding.answer.Answer;
+import com.example.domain.Shared.errorhanding.exception.UnhandledError;
+import com.example.domain.Shared.errorhanding.outcome.Outcome;
 import com.example.domain.Trip.tripBook.TripBook;
 import com.example.domain.Trip.tripExpense.TripExpense;
 import com.example.domain.Trip.tripExpense.paymentdetail.PaymentDetail;
+import com.example.domain.Shared.valueObject.date.Date;
+import com.example.domain.Shared.valueObject.id.ID;
 
 import java.util.Optional;
 
@@ -18,7 +18,7 @@ public class CashRecordService {
 
     // region Error Class --------------------------------------------------------------------------
     public static class Err {
-        public static class Add {
+        public static class Save {
             public enum CollTrans {
                 SOURCE_TRANS_NOT_EXIST,
                 DIFFERENT_TRIP,
@@ -43,29 +43,30 @@ public class CashRecordService {
 
     // ------------------------------------Collectible Transaction----------------------------------
 
-    public Outcome<Err.Add.CollTrans> addRecord(TripBook tripBk,
-                                                CashBook cashBk,
-                                                CollectibleBook collectBk,
-                                                CashRecordFactory factory,
-                                                ID collTransId) {
+    public Outcome<Err.Save.CollTrans> saveRecord(TripBook tripBk,
+                                                  CashBook cashBk,
+                                                  CollectibleBook collectBk,
+                                                  CashRecordFactory factory,
+                                                  ID collTransId) {
         // Validation
-        // -- Validate Source Trans exist
+        // -- Validate RecordSource Trans exist
         Optional<CollectibleTransaction> sourceTrans = collectBk.getCollectibleTrans().get(collTransId);
         if (!sourceTrans.isPresent())
-            return Outcome.err(Err.Add.CollTrans.SOURCE_TRANS_NOT_EXIST);
+            return Outcome.err(Err.Save.CollTrans.SOURCE_TRANS_NOT_EXIST);
 
         // -- Validate Trip & Date
         if (isDifferentTrip(tripBk, cashBk, collectBk))
-            return Outcome.err(Err.Add.CollTrans.DIFFERENT_TRIP);
+            return Outcome.err(Err.Save.CollTrans.DIFFERENT_TRIP);
         if (notDuringTrip(tripBk, sourceTrans.get().getDate()))
-            return Outcome.err(Err.Add.CollTrans.INVALID_DATE);
+            return Outcome.err(Err.Save.CollTrans.INVALID_DATE);
 
         // Success
-        cashBk.addCashRecord(factory.create(sourceTrans.get()));
+        cashBk.saveCashRecord(factory.create(sourceTrans.get()));
         return Outcome.ok();
 
     }
 
+    @Deprecated
     public Outcome<Err.Remove> removeRecord(CollectibleBook collectibleBook,
                                             CashBook cashBook,
                                             ID collTransId) {
@@ -74,7 +75,7 @@ public class CashRecordService {
         if (isDifferentTrip(cashBook, collectibleBook))
             return Outcome.err(Err.Remove.DIFFERENT_TRIP);
 
-        // -- Validate Source delete
+        // -- Validate RecordSource delete
         boolean sourceStillExist = !collectibleBook.getCollectibleTrans().contain(collTransId);
         if (sourceStillExist) return Outcome.err(Err.Remove.SOURCE_STILL_EXIST);
 
@@ -86,32 +87,32 @@ public class CashRecordService {
     // ------------------------------------TripExpense Transaction----------------------------------
 
 
-    public Outcome<Err.Add.TripExpense> addRecord(TripBook tripBk,
-                                                  CashBook cashBk,
-                                                  CashRecordFactory factory,
-                                                  ID tripExpenseId) {
+    public Outcome<Err.Save.TripExpense> saveRecord(TripBook tripBk,
+                                                    CashBook cashBk,
+                                                    CashRecordFactory factory,
+                                                    ID tripExpenseId) {
         // Validation
-        // -- Validate Source Trans exist
+        // -- Validate RecordSource Trans exist
         Optional<TripExpense> sourceTrans = tripBk.getTripExpenses().get(tripExpenseId);
         if (!sourceTrans.isPresent())
-            return Outcome.err(Err.Add.TripExpense.SOURCE_TRANS_NOT_EXIST);
+            return Outcome.err(Err.Save.TripExpense.SOURCE_TRANS_NOT_EXIST);
 
         // -- Validate Trip & Date
         if (isDifferentTrip(tripBk, cashBk))
-            return Outcome.err(Err.Add.TripExpense.DIFFERENT_TRIP);
+            return Outcome.err(Err.Save.TripExpense.DIFFERENT_TRIP);
         if (notDuringTrip(tripBk, sourceTrans.get().getDate()))
-            return Outcome.err(Err.Add.TripExpense.INVALID_DATE);
+            return Outcome.err(Err.Save.TripExpense.INVALID_DATE);
 
         // -- Validate User is paying
         if (userNotPaying(sourceTrans.get()))
-            return Outcome.err(Err.Add.TripExpense.USER_NOT_PAYING);
+            return Outcome.err(Err.Save.TripExpense.USER_NOT_PAYING);
 
         // Success
-        cashBk.addCashRecord(factory.create(sourceTrans.get()));
+        cashBk.saveCashRecord(factory.create(sourceTrans.get()));
         return Outcome.ok();
     }
 
-
+    @Deprecated
     public Outcome<Err.Remove> removeRecord(TripBook tripBook,
                                             CashBook cashBook,
                                             ID tripExpenseId) {
@@ -119,7 +120,7 @@ public class CashRecordService {
         // -- Validate Trip
         if (isDifferentTrip(cashBook, tripBook)) return Outcome.err(Err.Remove.DIFFERENT_TRIP);
 
-        // -- Validate Source delete
+        // -- Validate RecordSource delete
         boolean sourceStillExist = !tripBook.getTripExpenses().contain(tripExpenseId);
         if (sourceStillExist) return Outcome.err(Err.Remove.SOURCE_STILL_EXIST);
 

@@ -1,23 +1,19 @@
 package com.example.domain.Trip.tripBook;
 
-import com.example.domain.Common.baseclass.book.Book;
-import com.example.domain.Common.errorhanding.check.Check;
-import com.example.domain.Common.errorhanding.exception.NullArgumentException;
-import com.example.domain.Common.errorhanding.exception.UnexpectedEnumValue;
-import com.example.domain.Common.errorhanding.outcome.Outcome;
-import com.example.domain.Common.sharedValueObject.date.Date;
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.entityList.EntityList;
-import com.example.domain.Common.sharedValueObject.name.Name;
-import com.example.domain.Common.sharedValueObject.uri.Uri;
-import com.example.domain.Common.errorhanding.guard.Guard;
-import com.example.domain.Common.errorhanding.result.Result;
-import com.example.domain.Trip.tripEvent.CategoryRemoved;
-import com.example.domain.Trip.tripEvent.MemberRemoved;
-import com.example.domain.Trip.tripEvent.TripBookCreated;
-import com.example.domain.Trip.tripEvent.TripBookRemoved;
-import com.example.domain.Trip.tripEvent.TripExpenseAdded;
-import com.example.domain.Trip.tripEvent.TripExpenseRemoved;
+import com.example.domain.Trip.tripEvent.TripBookSaved;
+import com.example.domain.Shared.commandBaseClass.book.Book;
+import com.example.domain.Shared.errorhanding.check.Check;
+import com.example.domain.Shared.errorhanding.exception.NullArgumentException;
+import com.example.domain.Shared.errorhanding.exception.UnexpectedEnumValue;
+import com.example.domain.Shared.errorhanding.outcome.Outcome;
+import com.example.domain.Shared.valueObject.date.Date;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.entityList.EntityList;
+import com.example.domain.Shared.valueObject.name.Name;
+import com.example.domain.Shared.valueObject.uri.Uri;
+import com.example.domain.Shared.errorhanding.guard.Guard;
+import com.example.domain.Shared.errorhanding.result.Result;
+import com.example.domain.Trip.tripEvent.TripExpenseSaved;
 import com.example.domain.Trip.tripExpense.TripExpense;
 import com.example.domain.Trip.tripMember.TripMember;
 import com.example.domain.Trip.category.Category;
@@ -87,7 +83,7 @@ public class TripBook extends Book  {
             HAD_TRANSACTION
         }
 
-        public enum AddExpense {
+        public enum SaveExpense {
             PAYER_INVALID,
             SPENDER_INVALID,
             CATEGORY_INVALID,
@@ -114,7 +110,7 @@ public class TripBook extends Book  {
                      Uri photoUri,
                      Date startDate,
                      Date endDate) {
-        super(id, id);
+        super(id);
         mCategories = categories;
         mTripMembers = tripMembers;
         mTripExpenses = tripExpenses;
@@ -123,7 +119,7 @@ public class TripBook extends Book  {
         this.mStartDate = startDate;
         this.mEndDate = endDate;
 
-        super.addDomainEvent(new TripBookCreated(this.getId()));
+        super.addDomainEvent(new TripBookSaved(this.getId()));
     }
     // endregion Variables and Constructor ---------------------------------------------------------
 
@@ -160,7 +156,7 @@ public class TripBook extends Book  {
     }
 
     // ----------------------------------------Category---------------------------------------------
-    public void addCategory(Category category) {
+    public void saveCategory(Category category) {
         mCategories.put(category);
     }
 
@@ -174,13 +170,12 @@ public class TripBook extends Book  {
 
         // Success
         mCategories.remove(categoryId);
-        super.addDomainEvent(new CategoryRemoved(this.getId(), categoryId));
         return Outcome.ok();
     }
 
 
     // ----------------------------------------TripMember-------------------------------------------
-    public void addMember(TripMember tripMember) {
+    public void saveMember(TripMember tripMember) {
         mTripMembers.put(tripMember);
     }
 
@@ -190,31 +185,30 @@ public class TripBook extends Book  {
 
         // Success
         mTripMembers.remove(tripMemberId);
-        super.addDomainEvent(new MemberRemoved(this.getId(), tripMemberId));
         return Outcome.ok();
     }
 
-    // ---------------------------------------Trip AddExpense---------------------------------------
-    public Outcome<Err.AddExpense> addExpense(TripExpense tripExpense) {
+    // ---------------------------------------Trip SaveExpense---------------------------------------
+    public Outcome<Err.SaveExpense> saveExpense(TripExpense tripExpense) {
         // Check if payer is valid Member
         boolean hasInvalidPayer = isInvalidMember(tripExpense.getPayers());
-        if (hasInvalidPayer) return Outcome.err(Err.AddExpense.PAYER_INVALID);
+        if (hasInvalidPayer) return Outcome.err(Err.SaveExpense.PAYER_INVALID);
 
         // Check if spender is valid Member
         boolean hasInvalidSpender = isInvalidMember(tripExpense.getSpenders());
-        if (hasInvalidSpender) return Outcome.err(Err.AddExpense.SPENDER_INVALID);
+        if (hasInvalidSpender) return Outcome.err(Err.SaveExpense.SPENDER_INVALID);
 
         // Check if category is valid
         boolean isInvalidCategory = isInvalidCategory(tripExpense.getCategoryId());
-        if (isInvalidCategory) return Outcome.err(Err.AddExpense.CATEGORY_INVALID);
+        if (isInvalidCategory) return Outcome.err(Err.SaveExpense.CATEGORY_INVALID);
 
         // Check if User is involved
         boolean userNotInvolved = userNotInvolved(tripExpense);
-        if (userNotInvolved) return Outcome.err(Err.AddExpense.USER_NOT_INVOLVED);
+        if (userNotInvolved) return Outcome.err(Err.SaveExpense.USER_NOT_INVOLVED);
 
         // Proceed
         mTripExpenses.put(tripExpense);
-        super.addDomainEvent(new TripExpenseAdded(this.getId(), tripExpense.getId()));
+        super.addDomainEvent(new TripExpenseSaved(this.getId(), tripExpense.getId()));
         return Outcome.ok();
     }
 
@@ -252,7 +246,6 @@ public class TripBook extends Book  {
 
     public void removeExpense(ID tripExpenseId) {
         mTripExpenses.remove(tripExpenseId);
-        super.addDomainEvent(new TripExpenseRemoved(this.getId(), tripExpenseId));
     }
 
     // region helper method ------------------------------------------------------------------------
@@ -321,7 +314,7 @@ public class TripBook extends Book  {
     }
 
     public int getTripNumberOfDay() {
-        return getStartDate().different(getEndDate());
+        return getStartDate().differentInDay(getEndDate());
     }
     // endregion Getter ----------------------------------------------------------------------------
 }

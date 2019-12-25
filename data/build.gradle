@@ -6,7 +6,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -21,14 +21,30 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(':application')
+    implementation project(':domain')
+
     implementation 'androidx.appcompat:appcompat:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+    //Room
+    annotationProcessor 'androidx.room:room-compiler:2.2.2'
+    implementation 'androidx.room:room-runtime:2.2.2'
+
+    //DB dbug
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
 }

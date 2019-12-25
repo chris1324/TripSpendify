@@ -1,8 +1,8 @@
 package com.example.domain.Trip.tripExpense.paymentdetail;
 
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.errorhanding.answer.Answer;
-import com.example.domain.Common.sharedValueObject.numeric.MonetaryAmount;
+import com.example.domain.Shared.errorhanding.answer.Answer;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.valueObject.numeric.MonetaryAmount;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,8 +22,8 @@ class MemberPay implements PaymentDetail {
     }
 
     @Override
-    public boolean isPaid() {
-        return true;
+    public boolean isUnpaid() {
+        return false;
     }
 
 

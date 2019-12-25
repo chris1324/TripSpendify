@@ -1,12 +1,12 @@
 package com.example.domain.Trip.category;
 
-import com.example.domain.Common.baseclass.entity.Entity;
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.errorhanding.guard.Guard;
-import com.example.domain.Common.errorhanding.exception.NullArgumentException;
-import com.example.domain.Common.errorhanding.result.Result;
-import com.example.domain.Common.sharedValueObject.name.Name;
-import com.example.domain.Common.sharedValueObject.uri.Uri;
+import com.example.domain.Shared.commandBaseClass.entity.Entity;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.errorhanding.guard.Guard;
+import com.example.domain.Shared.errorhanding.exception.NullArgumentException;
+import com.example.domain.Shared.errorhanding.result.Result;
+import com.example.domain.Shared.valueObject.name.Name;
+import com.example.domain.Shared.valueObject.uri.Uri;
 
 public class Category extends Entity {
 

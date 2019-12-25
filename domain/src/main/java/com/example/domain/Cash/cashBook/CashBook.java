@@ -2,23 +2,21 @@ package com.example.domain.Cash.cashBook;
 
 import com.example.domain.Cash.cashRecord.CashRecord;
 import com.example.domain.Cash.cashTransaction.CashTransaction;
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.baseclass.book.Book;
-import com.example.domain.Common.entityList.EntityList;
-import com.example.domain.Common.errorhanding.exception.NullArgumentException;
-import com.example.domain.Common.errorhanding.guard.Guard;
-import com.example.domain.Common.errorhanding.result.Result;
+import com.example.domain.Shared.entityList.EntityList;
+import com.example.domain.Shared.errorhanding.guard.Guard;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.commandBaseClass.book.Book;
+import com.example.domain.Shared.errorhanding.exception.NullArgumentException;
+import com.example.domain.Shared.errorhanding.result.Result;
 
 import java.util.List;
 
 public class CashBook extends Book {
     // region Factory method -----------------------------------------------------------------------
-    public static Result<CashBook, CashBook.Err.Create> create(ID id,
-                                                               ID tripBookId,
+    public static Result<CashBook, CashBook.Err.Create> create(ID tripBookId,
                                                                List<CashRecord> cashTransactions,
                                                                List<CashTransaction> cashDeposits) {
         try {
-            Guard.NotNull(id);
             Guard.NotNull(tripBookId);
             Guard.NotNull(cashTransactions);
             Guard.NotNull(cashDeposits);
@@ -27,7 +25,6 @@ public class CashBook extends Book {
         }
 
         return Result.ok(new CashBook(
-                id,
                 tripBookId,
                 EntityList.newList(cashTransactions),
                 EntityList.newList(cashDeposits)
@@ -48,11 +45,10 @@ public class CashBook extends Book {
     private final EntityList<CashRecord> mCashRecords;
     private final EntityList<CashTransaction> mCashTransactions;
 
-    private CashBook(ID id,
-                     ID tripBookId,
+    private CashBook(ID tripBookId,
                      EntityList<CashRecord> cashRecords,
                      EntityList<CashTransaction> cashTransactions) {
-        super(id, tripBookId);
+        super(tripBookId);
         mCashRecords = cashRecords;
         mCashTransactions = cashTransactions;
     }
@@ -60,18 +56,19 @@ public class CashBook extends Book {
     // endregion Variables and Constructor ---------------------------------------------------------
 
     // ---------------------------------------Cash Record-------------------------------------------
-    void addCashRecord(CashRecord cashRecord) {
+    void saveCashRecord(CashRecord cashRecord) {
         mCashRecords.put(cashRecord);
     }
 
+    @Deprecated
     void removeCashRecord(ID sourceTransId) {
         mCashRecords.remove(cashRecord -> cashRecord.getSourceTransId().equals(sourceTransId));
     }
 
     // -------------------------------------Cash Transaction----------------------------------------
-    void addCashTransaction(CashTransaction cashTransaction, CashRecord record) {
+    void saveCashTransaction(CashTransaction cashTransaction, CashRecord record) {
         mCashTransactions.put(cashTransaction);
-        this.addCashRecord(record);
+        this.saveCashRecord(record);
     }
 
     void removeCashTransaction(ID transactionId) {

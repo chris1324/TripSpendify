@@ -2,12 +2,12 @@ package com.example.domain.Budget.budgetBook;
 
 import com.example.domain.Budget.budgetRecord.BudgetRecord;
 import com.example.domain.Budget.budgetTransaction.BudgetTransaction;
-import com.example.domain.Common.baseclass.book.Book;
-import com.example.domain.Common.errorhanding.exception.ImpossibleState;
-import com.example.domain.Common.errorhanding.outcome.Outcome;
-import com.example.domain.Common.sharedValueObject.date.Date;
-import com.example.domain.Common.sharedValueObject.id.ID;
+import com.example.domain.Shared.commandBaseClass.book.Book;
+import com.example.domain.Shared.errorhanding.exception.ImpossibleState;
+import com.example.domain.Shared.errorhanding.outcome.Outcome;
 import com.example.domain.Trip.tripBook.TripBook;
+import com.example.domain.Shared.valueObject.date.Date;
+import com.example.domain.Shared.valueObject.id.ID;
 
 public class BudgetTransactionService {
 
@@ -19,9 +19,9 @@ public class BudgetTransactionService {
     }
 
     // endregion Error Class -----------------------------------------------------------------------
-    public Outcome<Err> addBudgetTrans(TripBook tripBk,
-                                       BudgetBook budgetBk,
-                                       BudgetTransaction transaction) {
+    public Outcome<Err> saveBudgetTrans(TripBook tripBk,
+                                        BudgetBook budgetBk,
+                                        BudgetTransaction transaction) {
         // Validation
         // -- Validate Trip & Date
         if (isDifferentTrip(tripBk, budgetBk))
@@ -30,7 +30,7 @@ public class BudgetTransactionService {
             return Outcome.err(Err.DATE_INVALID);
 
         // Success
-        budgetBk.addBudgetTransaction(transaction, createRecordFromBudgetTrans(transaction));
+        budgetBk.saveBudgetTransaction(transaction, createRecordFromBudgetTrans(transaction));
         return Outcome.ok();
     }
 
@@ -43,7 +43,7 @@ public class BudgetTransactionService {
         return BudgetRecord
                 .create(
                         transaction.getId(),
-                        BudgetRecord.Source.BUDGET_TRANSACTION,
+                        BudgetRecord.SourceType.BUDGET_TRANSACTION,
                         transaction.getAmount()
                 )
                 .getValue()

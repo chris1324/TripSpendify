@@ -1,10 +1,10 @@
 package com.example.domain.Trip.tripExpense.splittingdetail;
 
-import com.example.domain.Common.errorhanding.check.Check;
-import com.example.domain.Common.errorhanding.result.Result;
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.errorhanding.answer.Answer;
-import com.example.domain.Common.sharedValueObject.numeric.MonetaryAmount;
+import com.example.domain.Shared.errorhanding.check.Check;
+import com.example.domain.Shared.errorhanding.result.Result;
+import com.example.domain.Shared.errorhanding.answer.Answer;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.valueObject.numeric.MonetaryAmount;
 
 import java.util.Map;
 import java.util.Optional;

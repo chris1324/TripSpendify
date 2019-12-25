@@ -1,13 +1,13 @@
 package com.example.domain.Collectible.collectibleTransaction;
 
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.baseclass.transaction.Transaction;
-import com.example.domain.Common.errorhanding.exception.NullArgumentException;
-import com.example.domain.Common.errorhanding.guard.Guard;
-import com.example.domain.Common.errorhanding.result.Result;
-import com.example.domain.Common.sharedValueObject.date.Date;
-import com.example.domain.Common.sharedValueObject.numeric.MonetaryAmount;
-import com.example.domain.Common.sharedValueObject.note.Note;
+import com.example.domain.Shared.errorhanding.guard.Guard;
+import com.example.domain.Shared.errorhanding.result.Result;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.commandBaseClass.transaction.Transaction;
+import com.example.domain.Shared.errorhanding.exception.NullArgumentException;
+import com.example.domain.Shared.valueObject.date.Date;
+import com.example.domain.Shared.valueObject.numeric.MonetaryAmount;
+import com.example.domain.Shared.valueObject.note.Note;
 
 public class CollectibleTransaction extends Transaction {
 

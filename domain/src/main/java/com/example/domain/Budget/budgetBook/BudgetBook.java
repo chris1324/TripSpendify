@@ -2,26 +2,24 @@ package com.example.domain.Budget.budgetBook;
 
 import com.example.domain.Budget.budgetTransaction.BudgetTransaction;
 import com.example.domain.Budget.budgetRecord.BudgetRecord;
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.baseclass.book.Book;
-import com.example.domain.Common.entityList.EntityList;
-import com.example.domain.Common.errorhanding.exception.NullArgumentException;
-import com.example.domain.Common.errorhanding.guard.Guard;
-import com.example.domain.Common.errorhanding.result.Result;
-import com.example.domain.Common.sharedValueObject.date.Date;
+import com.example.domain.Shared.entityList.EntityList;
+import com.example.domain.Shared.errorhanding.exception.NullArgumentException;
+import com.example.domain.Shared.errorhanding.guard.Guard;
+import com.example.domain.Shared.errorhanding.result.Result;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.commandBaseClass.book.Book;
+import com.example.domain.Shared.valueObject.date.Date;
 
 import java.util.List;
 
 public class BudgetBook extends Book {
 
     // region Factory method -----------------------------------------------------------------------
-    public static Result<BudgetBook, Err.Create> create(ID id,
-                                                        ID tripBookID,
+    public static Result<BudgetBook, Err.Create> create(ID tripBookID,
                                                         List<BudgetRecord> budgetRecords,
                                                         List<BudgetTransaction> budgetTransactions) {
 
         try {
-            Guard.NotNull(id);
             Guard.NotNull(tripBookID);
             Guard.NotNull(budgetRecords);
             Guard.NotNull(budgetTransactions);
@@ -30,7 +28,6 @@ public class BudgetBook extends Book {
         }
 
         return Result.ok(new BudgetBook(
-                id,
                 tripBookID,
                 EntityList.newList(budgetRecords),
                 EntityList.newList(budgetTransactions)
@@ -51,11 +48,10 @@ public class BudgetBook extends Book {
     private final EntityList<BudgetRecord> mBudgetRecords;
     private final EntityList<BudgetTransaction> mBudgetTransactions;
 
-    protected BudgetBook(ID id,
-                         ID tripBookID,
+    protected BudgetBook(ID tripBookID,
                          EntityList<BudgetRecord> budgetRecords,
                          EntityList<BudgetTransaction> budgetTransactions) {
-        super(id, tripBookID);
+        super(tripBookID);
         mBudgetRecords = budgetRecords;
         mBudgetTransactions = budgetTransactions;
     }
@@ -63,19 +59,20 @@ public class BudgetBook extends Book {
     // endregion Variables and Constructor ---------------------------------------------------------
 
     // -------------------------------------Budget Record-------------------------------------------
-    void addBudgetRecord(BudgetRecord record) {
+    void saveBudgetRecord(BudgetRecord record) {
         mBudgetRecords.put(record);
     }
 
+    @Deprecated
     void removeBudgetRecord(ID sourceTransId) {
         mBudgetRecords.remove(record -> record.getSourceTransId().equals(sourceTransId));
     }
 
     // -----------------------------------Budget Transaction----------------------------------------
-    void addBudgetTransaction(BudgetTransaction transaction, BudgetRecord budgetRecord) {
+    void saveBudgetTransaction(BudgetTransaction transaction, BudgetRecord budgetRecord) {
         this.removeBudgetTransWithThisDay(transaction.getDate());
         mBudgetTransactions.put(transaction);
-        this.addBudgetRecord(budgetRecord);
+        this.saveBudgetRecord(budgetRecord);
     }
 
     void removeBudgetTransaction(ID transactionId) {
@@ -86,7 +83,7 @@ public class BudgetBook extends Book {
     // region helper method ------------------------------------------------------------------------
     private void removeBudgetTransWithThisDay(Date date) {
         mBudgetTransactions
-                .searchReturnFirst(budgetTransaction -> budgetTransaction.getDate().isSameDate(date))
+                .searchFirst(budgetTransaction -> budgetTransaction.getDate().isSameDate(date))
                 .map(BudgetTransaction::getId)
                 .ifPresent(this::removeBudgetTransaction);
     }

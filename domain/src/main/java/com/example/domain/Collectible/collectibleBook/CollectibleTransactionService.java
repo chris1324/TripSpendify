@@ -1,16 +1,16 @@
 package com.example.domain.Collectible.collectibleBook;
 
 import com.example.domain.Collectible.collectibleTransaction.CollectibleTransaction;
-import com.example.domain.Common.baseclass.book.Book;
-import com.example.domain.Common.errorhanding.outcome.Outcome;
-import com.example.domain.Common.sharedValueObject.id.ID;
+import com.example.domain.Shared.commandBaseClass.book.Book;
+import com.example.domain.Shared.errorhanding.outcome.Outcome;
 import com.example.domain.Trip.tripBook.TripBook;
+import com.example.domain.Shared.valueObject.id.ID;
 
 public class CollectibleTransactionService {
 
     // region Error Class --------------------------------------------------------------------------
     public static class Err {
-        public enum AddCollTrans {
+        public enum SaveCollTrans {
             MEMBER_INVALID,
             TRIP_DIFFERENT
         }
@@ -18,21 +18,21 @@ public class CollectibleTransactionService {
     // endregion Error Class -----------------------------------------------------------------------
 
     // ------------------------------------Collectible Transaction----------------------------------
-    public Outcome<Err.AddCollTrans> addCollTrans(TripBook tripBk,
-                                                  CollectibleBook collectibleBk,
-                                                  CollectibleRecordFactory factory,
-                                                  CollectibleTransaction transaction) {
+    public Outcome<Err.SaveCollTrans> saveCollTrans(TripBook tripBk,
+                                                    CollectibleBook collectibleBk,
+                                                    CollectibleRecordFactory factory,
+                                                    CollectibleTransaction transaction) {
         // Validation
         // -- Validate Trip
         if (isDifferentTrip(tripBk, collectibleBk))
-            return Outcome.err(Err.AddCollTrans.TRIP_DIFFERENT);
+            return Outcome.err(Err.SaveCollTrans.TRIP_DIFFERENT);
 
         // -- Validate Member
         if (isInvalidMember(tripBk, transaction))
-            return Outcome.err(Err.AddCollTrans.MEMBER_INVALID);
+            return Outcome.err(Err.SaveCollTrans.MEMBER_INVALID);
 
         // Success
-        collectibleBk.addCollectibleTrans(transaction, factory.create(transaction));
+        collectibleBk.saveCollectibleTrans(transaction, factory.create(transaction));
         return Outcome.ok();
     }
 

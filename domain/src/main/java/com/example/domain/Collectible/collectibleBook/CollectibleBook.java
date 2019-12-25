@@ -3,33 +3,31 @@ package com.example.domain.Collectible.collectibleBook;
 import com.example.domain.Collectible.collectibleRecord.CollectibleRecord;
 import com.example.domain.Collectible.collectibleTransaction.CollectibleTransaction;
 
-import com.example.domain.Collectible.collectibleEvent.CollTransAdded;
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.baseclass.book.Book;
-import com.example.domain.Common.entityList.EntityList;
-import com.example.domain.Common.errorhanding.exception.NullArgumentException;
-import com.example.domain.Common.errorhanding.guard.Guard;
-import com.example.domain.Common.errorhanding.result.Result;
+import com.example.domain.Collectible.collectibleEvent.CollTransSaved;
+import com.example.domain.Shared.entityList.EntityList;
+import com.example.domain.Shared.errorhanding.exception.NullArgumentException;
+import com.example.domain.Shared.errorhanding.guard.Guard;
+import com.example.domain.Shared.errorhanding.result.Result;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.commandBaseClass.book.Book;
 
 import java.util.List;
 
 public class CollectibleBook extends Book {
 
     // region Factory method -----------------------------------------------------------------------
-    public static Result<CollectibleBook, Err.Create> create(ID id,
-                                                             ID tripBookID,
+    public static Result<CollectibleBook, Err.Create> create(ID tripBookID,
                                                              List<CollectibleRecord> collectibleRecords,
                                                              List<CollectibleTransaction> collectibleTrans) {
         try {
-            Guard.NotNull(id);
             Guard.NotNull(tripBookID);
+            Guard.NotNull(collectibleRecords);
             Guard.NotNull(collectibleTrans);
         } catch (NullArgumentException e) {
             return Result.err(Err.Create.NULL_ARGUMENT);
         }
 
         return Result.ok(new CollectibleBook(
-                id,
                 tripBookID,
                 EntityList.newList(collectibleRecords),
                 EntityList.newList(collectibleTrans)));
@@ -48,11 +46,10 @@ public class CollectibleBook extends Book {
     private final EntityList<CollectibleRecord> mCollectibleRecords;
     private final EntityList<CollectibleTransaction> mCollectibleTrans;
 
-    public CollectibleBook(ID id,
-                           ID tripBookID,
+    public CollectibleBook(ID tripBookID,
                            EntityList<CollectibleRecord> collectibleRecords,
                            EntityList<CollectibleTransaction> collectibleTrans) {
-        super(id, tripBookID);
+        super(tripBookID);
         mCollectibleRecords = collectibleRecords;
         mCollectibleTrans = collectibleTrans;
     }
@@ -60,25 +57,25 @@ public class CollectibleBook extends Book {
     // endregion Variables and Constructor ---------------------------------------------------------
 
     // ----------------------------------Collectible Record ----------------------------------------
-    void addCollectibleRecord(CollectibleRecord record) {
+    void saveCollectibleRecord(CollectibleRecord record) {
         mCollectibleRecords.put(record);
     }
 
+    @Deprecated
     void removeCollectibleRecord(ID sourceTransId) {
         mCollectibleRecords.remove(record -> record.getSourceTransId().equals(sourceTransId));
     }
 
     // ----------------------------------Collectible Transaction -----------------------------------
-    void addCollectibleTrans(CollectibleTransaction transaction, CollectibleRecord record) {
+    void saveCollectibleTrans(CollectibleTransaction transaction, CollectibleRecord record) {
         mCollectibleTrans.put(transaction);
-        this.addCollectibleRecord(record);
-        super.addDomainEvent(new CollTransAdded(this.getTripBookID(), transaction.getId()));
+        this.saveCollectibleRecord(record);
+        super.addDomainEvent(new CollTransSaved(this.getTripID(), transaction.getId()));
     }
 
     void removeCollectibleTrans(ID transactionID) {
         mCollectibleTrans.remove(transactionID);
         this.removeCollectibleRecord(transactionID);
-        super.addDomainEvent(new CollTransAdded(this.getTripBookID(), transactionID));
     }
 
     // region Getter -------------------------------------------------------------------------------

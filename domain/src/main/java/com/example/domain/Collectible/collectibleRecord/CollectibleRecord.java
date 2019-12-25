@@ -1,20 +1,20 @@
 package com.example.domain.Collectible.collectibleRecord;
 
-import com.example.domain.Common.errorhanding.exception.UnexpectedEnumValue;
-import com.example.domain.Common.sharedValueObject.id.ID;
-import com.example.domain.Common.errorhanding.exception.NullArgumentException;
-import com.example.domain.Common.errorhanding.guard.Guard;
-import com.example.domain.Common.errorhanding.result.Result;
-import com.example.domain.Common.baseclass.record.Record;
-import com.example.domain.Common.sharedValueObject.numeric.MonetaryAmount;
+import com.example.domain.Shared.errorhanding.exception.UnexpectedEnumValue;
+import com.example.domain.Shared.errorhanding.guard.Guard;
+import com.example.domain.Shared.errorhanding.result.Result;
+import com.example.domain.Shared.valueObject.id.ID;
+import com.example.domain.Shared.errorhanding.exception.NullArgumentException;
+import com.example.domain.Shared.commandBaseClass.record.BookRecord;
+import com.example.domain.Shared.valueObject.numeric.MonetaryAmount;
 
 import java.util.Map;
 
-public class CollectibleRecord extends Record<CollectibleRecord.Source, Map<ID, MonetaryAmount>> {
+public class CollectibleRecord extends BookRecord<CollectibleRecord.SourceType, Map<ID, MonetaryAmount>> {
 
     // region Factory method -----------------------------------------------------------------------
     public static Result<CollectibleRecord, Err.Create> create(ID sourceTransId,
-                                                               Source source,
+                                                               SourceType source,
                                                                Map<ID, MonetaryAmount> amounts) {
 
         try {
@@ -38,7 +38,7 @@ public class CollectibleRecord extends Record<CollectibleRecord.Source, Map<ID, 
     // endregion Error Class -----------------------------------------------------------------------
 
     // region Variables and Constructor ------------------------------------------------------------
-    public enum Source {
+    public enum SourceType implements BookRecord.Source {
         TRIP_EXPENSE_BORROWING,
         TRIP_EXPENSE_LENDING,
         COLL_SETTLEMENT_MADE,
@@ -46,7 +46,8 @@ public class CollectibleRecord extends Record<CollectibleRecord.Source, Map<ID, 
         COLL_CONTRIBUTION_MADE,
         COLL_CONTRIBUTION_ACCEPTED;
 
-        Record.Effect whatIsTheEffect() {
+        @Override
+        public Effect effectOnBalance() {
             switch (this) {
                 case TRIP_EXPENSE_LENDING:
                 case COLL_SETTLEMENT_MADE:
@@ -62,7 +63,7 @@ public class CollectibleRecord extends Record<CollectibleRecord.Source, Map<ID, 
         }
     }
 
-    protected CollectibleRecord(ID sourceTransId, Source source, Map<ID, MonetaryAmount> amounts) {
+    protected CollectibleRecord(ID sourceTransId, SourceType source, Map<ID, MonetaryAmount> amounts) {
         super(sourceTransId, source, amounts);
     }
 
