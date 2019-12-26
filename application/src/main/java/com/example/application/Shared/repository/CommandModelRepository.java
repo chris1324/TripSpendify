@@ -7,6 +7,4 @@ public interface CommandModelRepository<T> extends Repository{
     boolean exist(ID id);
 
     void save(T t);
-
-    void remove(ID id);
 }

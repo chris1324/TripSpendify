@@ -1,10 +1,10 @@
 package com.example.application.DomainEventHandler;
 
-import com.example.application.Budget.repository.BudgetBookRepository;
-import com.example.application.Cash.repository.CashBookRepository;
-import com.example.application.Collectible.repository.CollectibleBookRepository;
+import com.example.application.Budget.budgetBook.BudgetBookRepository;
+import com.example.application.Cash.cashBook.CashBookRepository;
+import com.example.application.Collectible.collBook.CollectibleBookRepository;
 import com.example.application.PersonalExpense.PersExpBookRepository;
-import com.example.application.Trip.repository.TripBookRepository;
+import com.example.application.Trip.tripBook.repository.TripBookRepository;
 import com.example.domain.Budget.budgetBook.BudgetBook;
 import com.example.domain.Budget.budgetBook.BudgetRecordService;
 import com.example.domain.Cash.cashBook.CashBook;

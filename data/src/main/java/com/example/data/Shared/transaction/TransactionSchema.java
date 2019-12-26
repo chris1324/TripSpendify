@@ -6,7 +6,7 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import com.example.data.Shared.schema.Schema;
-import com.example.data.Trip.schema.tripbook.TripBookSchema;
+import com.example.data.Trip.tripbook.TripBookSchema;
 
 import static androidx.room.ForeignKey.CASCADE;
 
@@ -14,7 +14,7 @@ import static androidx.room.ForeignKey.CASCADE;
         foreignKeys = @ForeignKey(
                 entity = TripBookSchema.class,
                 parentColumns = "trip_book_Id",
-                childColumns = "tripBookId",
+                childColumns = "mTripBookId",
                 onDelete = CASCADE)
 )
 public class TransactionSchema extends Schema {

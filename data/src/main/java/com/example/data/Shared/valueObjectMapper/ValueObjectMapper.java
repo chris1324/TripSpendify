@@ -1,8 +1,5 @@
 package com.example.data.Shared.valueObjectMapper;
 
-import android.provider.ContactsContract;
-
-import com.example.domain.Shared.errorhanding.exception.ImpossibleState;
 import com.example.domain.Shared.valueObject.contactnumber.ContactNumber;
 import com.example.domain.Shared.valueObject.date.Date;
 import com.example.domain.Shared.valueObject.id.ID;
@@ -12,83 +9,54 @@ import com.example.domain.Shared.valueObject.numeric.Amount;
 import com.example.domain.Shared.valueObject.numeric.MonetaryAmount;
 import com.example.domain.Shared.valueObject.uri.Uri;
 
-import java.math.BigDecimal;
-import java.net.URI;
-
-public class ValueObjectMapper {
-
-    public ID mapID(String id) {
-        return ID.existingId(id);
-    }
-
-    public String mapID(ID id) {
-        return id.toString();
-    }
+public interface ValueObjectMapper {
 
     // ---------------------------------------------------------------------------------------------
 
-    public Date mapDate(long date) {
-        return Date.create(date).getValue().orElseThrow(ImpossibleState::new);
-    }
+    ID mapID(String id);
 
-    public long mapDate(Date date) {
-        return date.getMillisecond();
-    }
-    // ---------------------------------------------------------------------------------------------
-
-    public MonetaryAmount mapMonetaryAmount(double amount) {
-        return MonetaryAmount.create(new BigDecimal(amount)).getValue().orElseThrow(ImpossibleState::new);
-    }
-
-    public double mapMonetaryAmount(MonetaryAmount monetaryAmount) {
-        return monetaryAmount.getAmount().getAmount().doubleValue();
-    }
+    String mapID(ID id);
 
     // ---------------------------------------------------------------------------------------------
 
-    public Amount mapAmount(double amount){
-        return Amount.create(new BigDecimal(amount)).getValue().orElseThrow(ImpossibleState::new);
-    }
+    Date mapDate(long date);
 
-    public double mapAmont(Amount amount){
-        return amount.getAmount().doubleValue();
-    }
+    long mapDate(Date date);
 
     // ---------------------------------------------------------------------------------------------
 
-    public Name mapName(String name) {
-        return Name.create(name).getValue().orElseThrow(ImpossibleState::new);
-    }
+    MonetaryAmount mapMonetaryAmount(double amount);
 
-    public String mapName(Name name) {
-        return name.toString();
-    }
+    double mapMonetaryAmount(MonetaryAmount monetaryAmount);
 
     // ---------------------------------------------------------------------------------------------
-    public Uri mapUri(String uri) {
-        return Uri.create(uri).getValue().orElseThrow(ImpossibleState::new);
-    }
 
-    public String mapUri(Uri uri) {
-        return uri.toString();
-    }
+    Amount mapAmount(double amount);
+
+    double mapAmount(Amount amount);
 
     // ---------------------------------------------------------------------------------------------
-    public Note mapNote(String note) {
-        return Note.create(note).getValue().orElseThrow(ImpossibleState::new);
-    }
 
-    public String mapNote(Note note) {
-        return note.toString();
-    }
+    Name mapName(String name);
+
+    String mapName(Name name);
 
     // ---------------------------------------------------------------------------------------------
-    public ContactNumber mapContactNumber(String contactNumber) {
-        return ContactNumber.create(contactNumber).getValue().orElseThrow(ImpossibleState::new);
-    }
+    Uri mapUri(String uri);
 
-    public String mapContactNumber(ContactNumber contactNumber) {
-        return contactNumber.toString();
-    }
+    String mapUri(Uri uri);
 
+    // ---------------------------------------------------------------------------------------------
+    Note mapNote(String note);
+
+    String mapNote(Note note);
+
+    // ---------------------------------------------------------------------------------------------
+    ContactNumber mapContactNumber(String contactNumber);
+
+    String mapContactNumber(ContactNumber contactNumber);
+
+    // ---------------------------------------------------------------------------------------------
+
+    String mapEnum(Enum e);
 }

@@ -1,8 +1,8 @@
 package com.example.application.DomainEventHandler;
 
-import com.example.application.Cash.repository.CashBookRepository;
-import com.example.application.Collectible.repository.CollectibleBookRepository;
-import com.example.application.Trip.repository.TripBookRepository;
+import com.example.application.Cash.cashBook.CashBookRepository;
+import com.example.application.Collectible.collBook.CollectibleBookRepository;
+import com.example.application.Trip.tripBook.repository.TripBookRepository;
 import com.example.domain.Cash.cashBook.CashBook;
 import com.example.domain.Cash.cashBook.CashRecordFactory;
 import com.example.domain.Cash.cashBook.CashRecordService;
